@@ -2,32 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Buscador en GitHub</title>
+    <title>Buscador en Excel</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-    <h1>Buscador de Repositorios en GitHub</h1>
+    <h1>Buscador en Excel</h1>
+    <input type="file" id="file" accept=".xlsx, .xls">
+    <br><br>
     <input type="text" id="search" placeholder="Buscar palabra...">
     <button onclick="buscar()">Buscar</button>
     <ul id="resultados"></ul>
 
     <script>
+        let datosExcel = [];
+
+        document.getElementById('file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                // Tomamos la primera hoja
+                const firstSheet = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheet];
+                datosExcel = XLSX.utils.sheet_to_json(worksheet, {header:1});
+                alert('¡Archivo cargado!');
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
         function buscar() {
-            const q = document.getElementById('search').value;
-            fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(q)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const ul = document.getElementById('resultados');
-                    ul.innerHTML = '';
-                    if (data.items) {
-                        data.items.forEach(repo => {
-                            const li = document.createElement('li');
-                            li.innerHTML = `<a href="${repo.html_url}" target="_blank">${repo.full_name}</a>: ${repo.description || ''}`;
-                            ul.appendChild(li);
-                        });
-                    } else {
-                        ul.innerHTML = '<li>No se encontraron resultados.</li>';
+            const q = document.getElementById('search').value.toLowerCase();
+            const ul = document.getElementById('resultados');
+            ul.innerHTML = '';
+            if (!datosExcel.length) {
+                ul.innerHTML = '<li>Primero carga un archivo Excel.</li>';
+                return;
+            }
+            let encontrados = 0;
+            datosExcel.forEach((fila, i) => {
+                fila.forEach((celda, j) => {
+                    if (celda && celda.toString().toLowerCase().includes(q)) {
+                        const li = document.createElement('li');
+                        li.textContent = `Fila ${i+1}, Columna ${j+1}: ${celda}`;
+                        ul.appendChild(li);
+                        encontrados++;
                     }
                 });
+            });
+            if (encontrados === 0) {
+                ul.innerHTML = '<li>No se encontraron resultados.</li>';
+            }
         }
     </script>
 </body>
