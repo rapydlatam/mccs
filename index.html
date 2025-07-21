@@ -4,26 +4,93 @@
   <title>Buscador de MCC</title>
   <meta charset="utf-8">
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    input { padding: 8px; width: 220px; }
-    ul { list-style: none; padding: 0; }
-    li { margin-bottom: 10px; background: #f2f2f2; padding: 10px; border-radius: 5px; }
-    .mcc { font-weight: bold; color: #2a5d9f; }
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f8f9fa; }
+    h2 { color: #2a5d9f; }
+    input { padding: 8px; width: 260px; border-radius: 4px; border: 1px solid #bbb; }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+      padding: 18px 22px;
+      max-width: 700px;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
+    .mcc { font-weight: bold; color: #2a5d9f; font-size: 1.1em; }
+    .desc { color: #444; margin-bottom: 8px; }
+    .label { font-weight: bold; color: #555; }
+    .restric-table {
+      border-collapse: collapse;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 0.95em;
+    }
+    .restric-table th, .restric-table td {
+      border: 1px solid #e0e0e0;
+      padding: 4px 8px;
+      text-align: center;
+    }
+    .restric-table th { background: #f2f2f2; }
+    .expand-btn {
+      background: #2a5d9f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      margin-top: 8px;
+      font-size: 0.95em;
+    }
+    .detalle { display: none; margin-top: 10px; background: #f7f7fa; padding: 10px; border-radius: 5px; }
+    .noresult { color: #b00; margin-top: 20px; }
   </style>
 </head>
 <body>
   <h2>Buscador de MCC</h2>
-  <input type="text" id="mccInput" placeholder="Escribe el MCC o nombre..." oninput="filtrarMCC()">
-  <ul id="resultados"></ul>
+  <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="filtrarMCC()">
+  <div id="resultados"></div>
 
   <script>
-    // Datos de ejemplo "quemados" en el HTML
+    // Datos de ejemplo (puedes reemplazar por fetch a tu JSON)
     const datos = [
-      {"MCC": "1234", "Nombre": "Restaurantes", "Ciudad": "Bogotá", "OtroDato": "Comida"},
-      {"MCC": "5678", "Nombre": "Supermercados", "Ciudad": "Medellín", "OtroDato": "Alimentos"},
-      {"MCC": "4321", "Nombre": "Hoteles", "Ciudad": "Cali", "OtroDato": "Hospedaje"},
-      {"MCC": "8765", "Nombre": "Gasolineras", "Ciudad": "Barranquilla", "OtroDato": "Combustible"}
+      {
+        "Actividad": "Transporte y mensajería",
+        "PayU Código": 78,
+        "MCC": 4511,
+        "Categroria / Subcategoria": "Aerolíneas",
+        "MCC CODE DESCRIPTION ES": "Compañías aéreas, aerolíneas no clasificadas en otra parte",
+        "ADD": 45,
+        "TPV USD$ (CELxDefault)": "2,000",
+        "Riesgo LAyFT": "BAJO",
+        "CO": "PERMITIDO",
+        "BR": "PERMITIDO",
+        "AR": "PERMITIDO",
+        "PE": "PERMITIDO",
+        "CL": "PERMITIDO",
+        "MX": "RESTRINGIDO",
+        "PA": "PERMITIDO",
+        "Fuente de restricción": "Medio de pago",
+        "Avg - Tpv USD": "N/A",
+        "Nivel de Aprobación": "Comité LATAM/GPO.",
+        "Condiciones para vinculación": "Restr - Airlines\nBig Onboarding (HVM): Realizar proceso de escalación mandatorio a crédito y/o comités. Para estas escalaciones se requerirán los Estados Financieros de los últimos dos cierres fiscales e interinos del año en curso + Split de ventas. Deben estar debidamente firmados según corresponda para cada país (Ver archivo de Credit Requirements)\nRequiere Licencia o permiso\n\nSmall Medium Business (SMB): Actividad prohibida para el segmento SMB",
+        "OXXO": "RESTRINGIDO",
+        "IGT": "RESTRINGIDO",
+        "Davivienda": "RESTRINGIDO",
+        "Banorte": "RESTRINGIDO",
+        "Amex": "PROHIBIDO",
+        "Pago efectivo": "RESTRINGIDO",
+        "Niubiz": "RESTRINGIDO",
+        "Izipay": "RESTRINGIDO",
+        "Amex__1": "Exclusiva para medio de pago no debe activarse",
+        "IGT__1": "RESTRINGIDO"
+      }
+      // ...puedes agregar más objetos aquí
     ];
+
+    // Lista de países/medios de pago a mostrar en tabla
+    const paises = ["CO","BR","AR","PE","CL","MX","PA"];
+    const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
 
     function filtrarMCC() {
       const texto = document.getElementById('mccInput').value.trim().toLowerCase();
@@ -32,27 +99,66 @@
 
       if (texto === '') return;
 
-      // Filtrar por MCC o por cualquier otro campo (ejemplo: Nombre)
+      // Filtrar por MCC, actividad, descripción, subcategoría
       const coincidencias = datos.filter(row =>
-        row.MCC.toLowerCase().includes(texto) ||
-        (row.Nombre && row.Nombre.toLowerCase().includes(texto))
+        (row.MCC && row.MCC.toString().toLowerCase().includes(texto)) ||
+        (row["Actividad"] && row["Actividad"].toLowerCase().includes(texto)) ||
+        (row["MCC CODE DESCRIPTION ES"] && row["MCC CODE DESCRIPTION ES"].toLowerCase().includes(texto)) ||
+        (row["Categroria / Subcategoria"] && row["Categroria / Subcategoria"].toLowerCase().includes(texto))
       );
 
       if (coincidencias.length === 0) {
-        resultados.innerHTML = '<li>No hay coincidencias</li>';
+        resultados.innerHTML = '<div class="noresult">No hay coincidencias</div>';
         return;
       }
 
-      coincidencias.forEach(row => {
-        let html = `<li><span class="mcc">MCC: ${row.MCC}</span><br>`;
-        for (let key in row) {
-          if (key !== 'MCC') {
-            html += `<strong>${key}:</strong> ${row[key]}<br>`;
-          }
-        }
-        html += '</li>';
+      coincidencias.forEach((row, idx) => {
+        let html = `<div class="card">
+          <div class="mcc">MCC: ${row.MCC} &mdash; ${row["Categroria / Subcategoria"] || ""}</div>
+          <div class="desc">${row["MCC CODE DESCRIPTION ES"] || ""}</div>
+          <div><span class="label">Actividad:</span> ${row["Actividad"] || ""}</div>
+          <div><span class="label">Riesgo:</span> ${row["Riesgo LAyFT"] || ""}</div>
+          <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
+          <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
+          <div style="margin-top:10px;">
+            <span class="label">Restricciones por país:</span>
+            <table class="restric-table">
+              <tr>
+                ${paises.map(p=>`<th>${p}</th>`).join('')}
+              </tr>
+              <tr>
+                ${paises.map(p=>`<td>${row[p]||""}</td>`).join('')}
+              </tr>
+            </table>
+          </div>
+          <div style="margin-top:10px;">
+            <span class="label">Medios de pago:</span>
+            <table class="restric-table">
+              <tr>
+                ${medios.map(m=>`<th>${m}</th>`).join('')}
+              </tr>
+              <tr>
+                ${medios.map(m=>`<td>${row[m]||""}</td>`).join('')}
+              </tr>
+            </table>
+          </div>
+          <button class="expand-btn" onclick="toggleDetalle(${idx})">Ver condiciones</button>
+          <div class="detalle" id="detalle${idx}">
+            <span class="label">Condiciones para vinculación:</span><br>
+            <pre style="white-space: pre-wrap;">${row["Condiciones para vinculación"] || "N/A"}</pre>
+          </div>
+        </div>`;
         resultados.innerHTML += html;
       });
+    }
+
+    function toggleDetalle(idx) {
+      const detalle = document.getElementById('detalle'+idx);
+      if (detalle.style.display === 'block') {
+        detalle.style.display = 'none';
+      } else {
+        detalle.style.display = 'block';
+      }
     }
   </script>
 </body>
