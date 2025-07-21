@@ -3,6 +3,7 @@
 <head>
   <title>Buscador de MCC</title>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; background: #f8f9fa; }
     h2 { color: #2a5d9f; }
@@ -11,20 +12,67 @@
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      margin-bottom: 20px;
-      padding: 18px 22px;
-      max-width: 700px;
-      transition: box-shadow 0.2s;
+      margin-bottom: 24px;
+      padding: 18px 22px 22px 22px;
+      max-width: 900px;
+      position: relative;
+      overflow: visible;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0;
     }
-    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
+    .card-content {
+      flex: 1 1 60%;
+      min-width: 260px;
+      max-width: 100%;
+    }
+    .condiciones-box {
+      flex: 1 1 38%;
+      min-width: 220px;
+      max-width: 350px;
+      background: #f7f7fa;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-left: 18px;
+      margin-bottom: 10px;
+      margin-top: 0;
+      font-size: 0.97em;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      z-index: 2;
+      min-height: 80px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    @media (max-width: 900px) {
+      .card { flex-direction: column; }
+      .condiciones-box {
+        position: static;
+        margin-left: 0;
+        margin-top: 12px;
+        max-width: 100%;
+        width: 100%;
+      }
+    }
     .mcc { font-weight: bold; color: #2a5d9f; font-size: 1.1em; }
     .desc { color: #444; margin-bottom: 8px; }
     .label { font-weight: bold; color: #555; }
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
+      background: transparent;
+      border-radius: 5px;
+    }
     .restric-table {
       border-collapse: collapse;
-      margin-top: 10px;
+      min-width: 500px;
       width: 100%;
       font-size: 0.95em;
+      background: #fff;
     }
     .restric-table th, .restric-table td {
       border: 1px solid #e0e0e0;
@@ -32,19 +80,14 @@
       text-align: center;
     }
     .restric-table th { background: #f2f2f2; }
-    .expand-btn {
-      background: #2a5d9f;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 4px 10px;
-      cursor: pointer;
-      margin-top: 8px;
-      font-size: 0.95em;
-    }
-    .detalle { display: none; margin-top: 10px; background: #f7f7fa; padding: 10px; border-radius: 5px; }
     .noresult { color: #b00; margin-top: 20px; }
     .loading { color: #888; margin-top: 20px; }
+    pre {
+      white-space: pre-wrap;
+      font-family: inherit;
+      font-size: 1em;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -101,51 +144,43 @@
 
       coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
-          <div class="mcc">MCC: ${row.MCC} &mdash; ${row["Categroria / Subcategoria"] || ""}</div>
-          <div class="desc">${row["MCC CODE DESCRIPTION ES"] || ""}</div>
-          <div><span class="label">Actividad:</span> ${row["Actividad"] || ""}</div>
-          <div><span class="label">Riesgo:</span> ${row["Riesgo LAyFT"] || ""}</div>
-          <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
-          <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
-          <div style="margin-top:10px;">
-            <span class="label">Restricciones por país:</span>
-            <table class="restric-table">
-              <tr>
-                ${paises.map(p=>`<th>${p}</th>`).join('')}
-              </tr>
-              <tr>
-                ${paises.map(p=>`<td>${row[p]||""}</td>`).join('')}
-              </tr>
-            </table>
+          <div class="card-content">
+            <div class="mcc">MCC: ${row.MCC} &mdash; ${row["Categroria / Subcategoria"] || ""}</div>
+            <div class="desc">${row["MCC CODE DESCRIPTION ES"] || ""}</div>
+            <div><span class="label">Actividad:</span> ${row["Actividad"] || ""}</div>
+            <div><span class="label">Riesgo:</span> ${row["Riesgo LAyFT"] || ""}</div>
+            <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
+            <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
+            <div class="table-responsive">
+              <span class="label">Restricciones por país:</span>
+              <table class="restric-table">
+                <tr>
+                  ${paises.map(p=>`<th>${p}</th>`).join('')}
+                </tr>
+                <tr>
+                  ${paises.map(p=>`<td>${row[p]||""}</td>`).join('')}
+                </tr>
+              </table>
+            </div>
+            <div class="table-responsive">
+              <span class="label">Medios de pago:</span>
+              <table class="restric-table">
+                <tr>
+                  ${medios.map(m=>`<th>${m}</th>`).join('')}
+                </tr>
+                <tr>
+                  ${medios.map(m=>`<td>${row[m]||""}</td>`).join('')}
+                </tr>
+              </table>
+            </div>
           </div>
-          <div style="margin-top:10px;">
-            <span class="label">Medios de pago:</span>
-            <table class="restric-table">
-              <tr>
-                ${medios.map(m=>`<th>${m}</th>`).join('')}
-              </tr>
-              <tr>
-                ${medios.map(m=>`<td>${row[m]||""}</td>`).join('')}
-              </tr>
-            </table>
-          </div>
-          <button class="expand-btn" onclick="toggleDetalle(${idx})">Ver condiciones</button>
-          <div class="detalle" id="detalle${idx}">
-            <span class="label">Condiciones para vinculación:</span><br>
-            <pre style="white-space: pre-wrap;">${row["Condiciones para vinculación"] || "N/A"}</pre>
+          <div class="condiciones-box">
+            <span class="label">Condiciones para vinculación:</span>
+            <pre>${row["Condiciones para vinculación"] || "N/A"}</pre>
           </div>
         </div>`;
         resultados.innerHTML += html;
       });
-    }
-
-    function toggleDetalle(idx) {
-      const detalle = document.getElementById('detalle'+idx);
-      if (detalle.style.display === 'block') {
-        detalle.style.display = 'none';
-      } else {
-        detalle.style.display = 'block';
-      }
     }
   </script>
 </body>
