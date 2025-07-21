@@ -242,9 +242,6 @@
       "BR": ["REDE", "CIELO"]
     };
 
-    // Construir lista única de medios de pago
-    const mediosUnicos = Array.from(new Set(Object.values(mediosPorPais).flat()));
-
     // Badge con ícono, fondo y texto
     function getBadge(val, label) {
       if (!val) return '';
@@ -283,25 +280,26 @@
       return '';
     }
 
-    // Genera la tabla de medios de pago (medios como filas, países como columnas)
-    function generarTablaMedios(row) {
-      let html = `<table class="restric-table"><tr><th>Medio de pago</th>`;
-      paises.forEach(pais => { html += `<th>${pais}</th>`; });
-      html += `</tr>`;
-      mediosUnicos.forEach(medio => {
-        html += `<tr><td style="font-weight:bold;">${medio}</td>`;
-        paises.forEach(pais => {
-          // Solo mostrar si ese medio aplica a ese país
-          if ((mediosPorPais[pais]||[]).includes(medio)) {
-            const val = row[medio] || "";
-            html += `<td>${getBadge(val, medio)}</td>`;
-          } else {
-            html += `<td></td>`;
+    // Genera la tabla de medios de pago por país (compacta)
+    function generarTablaMediosPorPais(row) {
+      let html = `<table class="restric-table"><tr>`;
+      // Encabezados de país
+      paises.forEach(pais => {
+        html += `<th>${pais}</th>`;
+      });
+      html += `</tr><tr>`;
+      paises.forEach(pais => {
+        html += `<td>`;
+        // Para cada medio de pago de ese país, si existe valor en el row, mostrar badge
+        (mediosPorPais[pais]||[]).forEach(medio => {
+          const val = row[medio];
+          if (val) {
+            html += getBadge(val, medio) + "<br>";
           }
         });
-        html += `</tr>`;
+        html += `</td>`;
       });
-      html += `</table>`;
+      html += `</tr></table>`;
       return html;
     }
 
@@ -372,7 +370,7 @@
             <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">Medios de pago por país:</span>
-              ${generarTablaMedios(row)}
+              ${generarTablaMediosPorPais(row)}
             </div>
           </div>
           <div class="condiciones-box">
