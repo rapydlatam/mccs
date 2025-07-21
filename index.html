@@ -44,32 +44,47 @@
     }
     .detalle { display: none; margin-top: 10px; background: #f7f7fa; padding: 10px; border-radius: 5px; }
     .noresult { color: #b00; margin-top: 20px; }
+    .loading { color: #888; margin-top: 20px; }
   </style>
 </head>
 <body>
   <h2>Buscador de MCC</h2>
-  <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="filtrarMCC()">
-  <div id="resultados"></div>
+  <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="filtrarMCC()" disabled>
+  <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
     let datos = [];
+    let datosCargados = false;
     // Lista de países/medios de pago a mostrar en tabla
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
 
     // Cargar el JSON al iniciar la página
     fetch('csvjson.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('No se pudo cargar el archivo csvjson.json');
+        return res.json();
+      })
       .then(json => {
         datos = json;
+        datosCargados = true;
+        document.getElementById('mccInput').disabled = false;
+        document.getElementById('resultados').innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
+      })
+      .catch(err => {
+        document.getElementById('resultados').innerHTML = '<div class="noresult">Error cargando los datos: ' + err.message + '</div>';
       });
 
     function filtrarMCC() {
+      if (!datosCargados) return;
       const texto = document.getElementById('mccInput').value.trim().toLowerCase();
       const resultados = document.getElementById('resultados');
       resultados.innerHTML = '';
 
-      if (texto === '') return;
+      if (texto === '') {
+        resultados.innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
+        return;
+      }
 
       // Filtrar por MCC, actividad, descripción, subcategoría
       const coincidencias = datos.filter(row =>
