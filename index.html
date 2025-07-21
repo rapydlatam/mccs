@@ -243,10 +243,10 @@
 </head>
 <body>
   <div class="logo-top-right">
-    <img src="PayM.png" alt="Logo" />
+    <img src="PayM.jpg" alt="Logo" />
   </div>
   <h2>Buscador de MCC</h2>
-  <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="filtrarMCC()" disabled>
+  <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
@@ -314,6 +314,13 @@
         {label: "CIELO", columna: "CIELO"}
       ]
     };
+
+    // DEBOUNCE: Espera 250ms después de que el usuario deja de escribir
+    let debounceTimer;
+    function debouncedFiltrarMCC() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(filtrarMCC, 250); // 250 ms de espera
+    }
 
     function getBadge(val, label) {
       if (!val) return '';
