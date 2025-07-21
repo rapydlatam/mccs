@@ -122,7 +122,7 @@
       border-spacing: 0;
       min-width: 700px;
       width: 100%;
-      font-size: 0.93em;
+      font-size: 0.89em;
       background: #fff;
       margin-bottom: 10px;
     }
@@ -141,23 +141,21 @@
       background: #fff;
       padding: 8px 10px;
       text-align: center;
-      font-size: 0.92em;
+      font-size: 0.89em;
       transition: background 0.2s, color 0.2s;
     }
     /* Badges para condiciones */
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 14px 4px 10px;
-      border-radius: 16px;
-      font-size: 0.93em;
-      font-weight: bold;
-      text-align: center;
-      min-width: 90px;
-      margin: 2px 0;
-      border: 1.5px solid transparent;
       justify-content: center;
+      padding: 3px 8px;
+      border-radius: 16px;
+      font-size: 1.1em;
+      min-width: 32px;
+      min-height: 32px;
+      border: 1.5px solid transparent;
+      margin: 2px 0;
     }
     .badge-permitido {
       background: #e6fbe9;
@@ -175,9 +173,10 @@
       border-color: #d6003a;
     }
     .badge svg {
-      width: 1.1em;
-      height: 1.1em;
+      width: 1.3em;
+      height: 1.3em;
       vertical-align: middle;
+      display: block;
     }
     .noresult {
       color: #FF007A;
@@ -213,7 +212,7 @@
       body { margin: 8px; }
       .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
       .condiciones-box { padding: 12px 8px; }
-      .restric-table { min-width: 480px; font-size: 0.89em; }
+      .restric-table { min-width: 480px; font-size: 0.85em; }
       .restric-table th, .restric-table td { padding: 7px 6px; }
       input { width: 98vw; max-width: 99vw; }
     }
@@ -231,19 +230,19 @@
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
 
-    // Función para mostrar badge según valor
+    // Función para mostrar solo el ícono en el badge según valor
     function getBadge(valor) {
       if (!valor) return '';
       const v = valor.toString().toLowerCase();
-      if (v.includes('')) return `<span class="badge badge-permitido">
+      if (v.includes('permitido')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        </span>`;
-      if (v.includes('')) return `<span class="badge badge-restringido">
+      </span>`;
+      if (v.includes('restringido')) return `<span class="badge badge-restringido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
-        </span>`;
-      if (v.includes('')) return `<span class="badge badge-prohibido">
+      </span>`;
+      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-        </span>`;
+      </span>`;
       return valor;
     }
 
