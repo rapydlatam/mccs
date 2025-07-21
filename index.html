@@ -139,7 +139,7 @@
       color: #b59a00 !important;
       font-weight: bold;
     }
-    .alto {
+    .prohibido {
       background: #ffe6ec !important;
       color: #d6003a !important;
       font-weight: bold;
@@ -194,7 +194,7 @@
       const v = valor.toString().toLowerCase();
       if (v.includes('permitido')) return 'permitido';
       if (v.includes('restringido')) return 'restringido';
-      if (v.includes('alto')) return 'alto';
+      if (v.includes('prohibido')) return 'prohibido';
       return '';
     }
 
