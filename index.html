@@ -52,45 +52,17 @@
   <div id="resultados"></div>
 
   <script>
-    // Datos de ejemplo (puedes reemplazar por fetch a tu JSON)
-    const datos = [
-      {
-        "Actividad": "Transporte y mensajería",
-        "PayU Código": 78,
-        "MCC": 4511,
-        "Categroria / Subcategoria": "Aerolíneas",
-        "MCC CODE DESCRIPTION ES": "Compañías aéreas, aerolíneas no clasificadas en otra parte",
-        "ADD": 45,
-        "TPV USD$ (CELxDefault)": "2,000",
-        "Riesgo LAyFT": "BAJO",
-        "CO": "PERMITIDO",
-        "BR": "PERMITIDO",
-        "AR": "PERMITIDO",
-        "PE": "PERMITIDO",
-        "CL": "PERMITIDO",
-        "MX": "RESTRINGIDO",
-        "PA": "PERMITIDO",
-        "Fuente de restricción": "Medio de pago",
-        "Avg - Tpv USD": "N/A",
-        "Nivel de Aprobación": "Comité LATAM/GPO.",
-        "Condiciones para vinculación": "Restr - Airlines\nBig Onboarding (HVM): Realizar proceso de escalación mandatorio a crédito y/o comités. Para estas escalaciones se requerirán los Estados Financieros de los últimos dos cierres fiscales e interinos del año en curso + Split de ventas. Deben estar debidamente firmados según corresponda para cada país (Ver archivo de Credit Requirements)\nRequiere Licencia o permiso\n\nSmall Medium Business (SMB): Actividad prohibida para el segmento SMB",
-        "OXXO": "RESTRINGIDO",
-        "IGT": "RESTRINGIDO",
-        "Davivienda": "RESTRINGIDO",
-        "Banorte": "RESTRINGIDO",
-        "Amex": "PROHIBIDO",
-        "Pago efectivo": "RESTRINGIDO",
-        "Niubiz": "RESTRINGIDO",
-        "Izipay": "RESTRINGIDO",
-        "Amex__1": "Exclusiva para medio de pago no debe activarse",
-        "IGT__1": "RESTRINGIDO"
-      }
-      // ...puedes agregar más objetos aquí
-    ];
-
+    let datos = [];
     // Lista de países/medios de pago a mostrar en tabla
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
+
+    // Cargar el JSON al iniciar la página
+    fetch('csvjson.json')
+      .then(res => res.json())
+      .then(json => {
+        datos = json;
+      });
 
     function filtrarMCC() {
       const texto = document.getElementById('mccInput').value.trim().toLowerCase();
