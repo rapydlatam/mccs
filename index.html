@@ -140,44 +140,34 @@
       color: #222;
       background: #fff;
       padding: 8px 10px;
-      text-align: center;
+      text-align: left;
       font-size: 0.89em;
       transition: background 0.2s, color 0.2s;
       vertical-align: top;
     }
-    /* Badges para condiciones */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3px 8px;
-      border-radius: 16px;
-      font-size: 1.1em;
-      min-width: 32px;
-      min-height: 32px;
-      border: 1.5px solid transparent;
-      margin: 2px 0;
-    }
-    .badge-permitido {
-      background: #e6fbe9;
+    .restric-permitido {
       color: #1a7f37;
-      border-color: #1a7f37;
+      font-weight: bold;
     }
-    .badge-restringido {
-      background: #fffbe6;
+    .restric-restringido {
       color: #b59a00;
-      border-color: #b59a00;
+      font-weight: bold;
     }
-    .badge-prohibido {
-      background: #ffe6ec;
+    .restric-prohibido {
       color: #d6003a;
-      border-color: #d6003a;
+      font-weight: bold;
     }
-    .badge svg {
-      width: 1.3em;
-      height: 1.3em;
-      vertical-align: middle;
-      display: block;
+    .medio-permitido {
+      color: #1a7f37;
+      font-weight: bold;
+    }
+    .medio-restringido {
+      color: #b59a00;
+      font-weight: bold;
+    }
+    .medio-prohibido {
+      color: #d6003a;
+      font-weight: bold;
     }
     .noresult {
       color: #FF007A;
@@ -239,47 +229,46 @@
       "BR": ["REDE", "CIELO"]
     };
 
-    // Función para mostrar solo el ícono en el badge según valor
-    function getBadge(valor) {
+    // Devuelve la clase CSS según el valor para restricciones por país
+    function getRestricClass(valor) {
       if (!valor) return '';
       const v = valor.toString().toLowerCase();
-      if (v.includes('permitido')) return `<span class="badge badge-permitido">
-        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      </span>`;
-      if (v.includes('restringido')) return `<span class="badge badge-restringido">
-        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
-      </span>`;
-      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
-        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-      </span>`;
-      return valor;
+      if (v.includes('permitido')) return 'restric-permitido';
+      if (v.includes('restringido')) return 'restric-restringido';
+      if (v.includes('prohibido')) return 'restric-prohibido';
+      return '';
     }
 
-    // Genera la tabla de medios de pago agrupada por país
-    function generarTablaMedios(row) {
-      let maxMedios = Math.max(...Object.values(mediosPorPais).map(arr => arr.length));
+    // Devuelve la clase CSS según el valor para medios de pago
+    function getMedioClass(valor) {
+      if (!valor) return '';
+      const v = valor.toString().toLowerCase();
+      if (v.includes('permitido')) return 'medio-permitido';
+      if (v.includes('restringido')) return 'medio-restringido';
+      if (v.includes('prohibido')) return 'medio-prohibido';
+      return '';
+    }
+
+    // Genera la tabla de medios de pago por país, con nombres coloreados
+    function generarTablaMediosPorPais(row) {
       let html = `<table class="restric-table"><tr>`;
       // Encabezados de país
       paises.forEach(pais => {
         html += `<th>${pais}</th>`;
       });
-      html += `</tr>`;
-      // Filas de medios de pago
-      for (let i = 0; i < maxMedios; i++) {
-        html += `<tr>`;
-        paises.forEach(pais => {
-          const medios = mediosPorPais[pais] || [];
-          const medio = medios[i];
-          if (medio) {
-            const val = row[medio] || "";
-            html += `<td>${getBadge(val)}</td>`;
-          } else {
-            html += `<td></td>`;
+      html += `</tr><tr>`;
+      paises.forEach(pais => {
+        html += `<td>`;
+        (mediosPorPais[pais]||[]).forEach(medio => {
+          const val = row[medio] || "";
+          const clase = getMedioClass(val);
+          if (val) {
+            html += `<div class="${clase}">${medio}</div>`;
           }
         });
-        html += `</tr>`;
-      }
-      html += `</table>`;
+        html += `</td>`;
+      });
+      html += `</tr></table>`;
       return html;
     }
 
@@ -342,7 +331,8 @@
                 <tr>
                   ${paises.map(p=>{
                     const val = row[p]||"";
-                    return `<td>${getBadge(val)}</td>`;
+                    const clase = getRestricClass(val);
+                    return `<td class="${clase}">${val}</td>`;
                   }).join('')}
                 </tr>
               </table>
@@ -350,7 +340,7 @@
             <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">Medios de pago por país:</span>
-              ${generarTablaMedios(row)}
+              ${generarTablaMediosPorPais(row)}
             </div>
           </div>
           <div class="condiciones-box">
