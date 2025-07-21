@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Buscador de MCC</title>
+  <title>Catálogo de MCC PayU</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts: Anton para títulos, Epilogue para texto normal -->
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Epilogue', Arial, sans-serif;
       margin: 40px;
       background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
       color: #222;
@@ -22,7 +24,7 @@
       max-width: 100%;
       height: auto;
       display: block;
-      max-height: 80px; /* <-- Así el logo nunca será más alto que 80px */
+      max-height: 80px;
     }
     @media (max-width: 700px) {
       .logo-top-right {
@@ -35,6 +37,7 @@
       body { margin: 8px; }
     }
     h2 {
+      font-family: 'Anton', Arial, sans-serif;
       background: linear-gradient(90deg, #5600EF, #FF007A);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -45,6 +48,7 @@
       margin-bottom: 28px;
     }
     input {
+      font-family: 'Epilogue', Arial, sans-serif;
       padding: 10px;
       width: 280px;
       border-radius: 6px;
@@ -76,6 +80,7 @@
       overflow-x: auto;
       border: 1.5px solid #FF007A;
       transition: box-shadow 0.2s, border 0.2s;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .card:hover {
       box-shadow: 0 6px 24px rgba(86,0,239,0.18);
@@ -101,6 +106,7 @@
       max-height: 350px;
       overflow-y: auto;
       border-left: 5px solid #FF007A;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     @media (max-width: 1100px) {
       .card { flex-direction: column; }
@@ -113,6 +119,7 @@
       }
     }
     .mcc {
+      font-family: 'Anton', Arial, sans-serif;
       font-weight: bold;
       color: #5600EF;
       font-size: 1.13em;
@@ -123,8 +130,10 @@
       color: #222;
       margin-bottom: 12px;
       font-size: 1.01em;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .label {
+      font-family: 'Anton', Arial, sans-serif;
       font-weight: bold;
       color: #222;
       letter-spacing: 0.2px;
@@ -152,6 +161,7 @@
       font-size: 0.89em;
       background: #fff;
       margin-bottom: 10px;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .restric-table th {
       background: #5600EF;
@@ -162,6 +172,7 @@
       padding: 10px 12px;
       font-size: 0.97em;
       text-align: center;
+      font-family: 'Anton', Arial, sans-serif;
     }
     .restric-table td {
       border: 2px solid #FF007A;
@@ -172,6 +183,7 @@
       font-size: 0.89em;
       transition: background 0.2s, color 0.2s;
       vertical-align: middle;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .badge {
       display: inline-flex;
@@ -187,6 +199,7 @@
       border: 1.5px solid transparent;
       justify-content: center;
       white-space: nowrap;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .badge-permitido {
       background: #e6fbe9;
@@ -213,15 +226,17 @@
       margin-top: 24px;
       font-weight: bold;
       font-size: 1.1em;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     .loading {
       color: #888;
       margin-top: 24px;
       font-size: 1.05em;
+      font-family: 'Epilogue', Arial, sans-serif;
     }
     pre {
       white-space: pre-wrap;
-      font-family: inherit;
+      font-family: 'Epilogue', Arial, sans-serif;
       font-size: 1em;
       margin: 0;
       color: #222;
@@ -250,7 +265,7 @@
   <div class="logo-top-right">
     <img src="PayM2.png" alt="Logo" />
   </div>
-  <h2>Buscador de MCC</h2>
+  <h2>Catálogo de MCC PayU</h2>
   <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
   <div id="resultados" class="loading">Cargando datos...</div>
 
