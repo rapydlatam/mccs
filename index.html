@@ -228,16 +228,48 @@
   <script>
     let datos = [];
     let datosCargados = false;
-    // Catálogo real de medios de pago por país (ajusta según tu operación)
+    // Catálogo de medios de pago por país (usa label y columna)
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
-      "CO": ["OXXO", "IGT", "Davivienda", "Codensa", "Efecty", "Ding", "Bancolombia", "Nequi", "Botón", "Movii", "Scotiabank", "ACH", "Matrix", "TC", "Banco Occidente", "BBVA"],
-      "MX": ["Banorte", "Amex", "Santader", "Bancomer", "Diestel", "SPEI", "Amex PR"],
-      "PE": ["Pago efectivo", "Niubiz", "Izipay", "Amex PR", "Procesos MC", "Visanet"],
-      "AR": ["Cobro Express", "Pagofacil", "Prisma", "Fiserv", "Rapipago"],
-      "CL": ["Multicaja", "Transbank", "Santader__1"],
-      "PA": ["Metrobank", "FISERV"],
-      "BR": ["REDE", "CIELO"]
+      "CO": [
+        {label: "OXXO", columna: "OXXO"},
+        {label: "IGT", columna: "IGT"},
+        {label: "Davivienda", columna: "Davivienda"},
+        {label: "Codensa", columna: "Codensa"},
+        // ...otros de CO
+      ],
+      "CL": [
+        {label: "IGT", columna: "IGT__1"},
+        {label: "Multicaja", columna: "Multicaja"},
+        {label: "Transbank", columna: "Transbank"},
+        {label: "Santader", columna: "Santader__1"},
+        // ...otros de CL
+      ],
+      "MX": [
+        {label: "Banorte", columna: "Banorte"},
+        {label: "Amex", columna: "Amex"},
+        // ...otros de MX
+      ],
+      "PE": [
+        {label: "Pago efectivo", columna: "Pago efectivo"},
+        {label: "Niubiz", columna: "Niubiz"},
+        {label: "Izipay", columna: "Izipay"},
+        // ...otros de PE
+      ],
+      "AR": [
+        {label: "Cobro Express", columna: "Cobro Express"},
+        {label: "Pagofacil", columna: "Pagofacil"},
+        // ...otros de AR
+      ],
+      "PA": [
+        {label: "Metrobank", columna: "Metrobank"},
+        // ...otros de PA
+      ],
+      "BR": [
+        {label: "REDE", columna: "REDE"},
+        {label: "CIELO", columna: "CIELO"},
+        // ...otros de BR
+      ]
     };
 
     function getBadge(val, label) {
@@ -285,9 +317,9 @@
       paises.forEach(pais => {
         html += `<td>`;
         (mediosPorPais[pais]||[]).forEach(medio => {
-          const val = row[medio];
+          const val = row[medio.columna];
           if (val && typeof val === "string" && val.trim() !== "") {
-            html += getBadge(val, medio) + "<br>";
+            html += getBadge(val, medio.label) + "<br>";
           }
         });
         html += `</td>`;
