@@ -9,12 +9,13 @@
       font-family: Arial, sans-serif;
       margin: 40px;
       background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
+      color: #222;
     }
     h2 {
       color: #5600EF;
       letter-spacing: 1px;
       font-weight: 800;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
     input {
       padding: 10px;
@@ -24,7 +25,8 @@
       font-size: 1em;
       transition: border 0.2s, box-shadow 0.2s;
       box-shadow: 0 1px 4px rgba(255,0,122,0.07);
-      margin-bottom: 30px;
+      margin-bottom: 36px;
+      color: #222;
     }
     input:focus {
       border: 2px solid #FF007A;
@@ -35,13 +37,13 @@
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(86,0,239,0.07);
-      margin-bottom: 32px;
-      padding: 22px 28px 28px 28px;
+      margin-bottom: 38px;
+      padding: 28px 32px 32px 32px;
       width: 100%;
       min-width: 0;
       display: flex;
       flex-direction: row;
-      gap: 32px;
+      gap: 40px;
       box-sizing: border-box;
       align-items: flex-start;
       overflow-x: auto;
@@ -63,7 +65,7 @@
       max-width: 400px;
       background: #f7f7fa;
       border-radius: 8px;
-      padding: 16px 18px;
+      padding: 18px 20px;
       font-size: 1em;
       box-shadow: 0 1px 4px rgba(255,0,122,0.08);
       margin-top: 0;
@@ -78,7 +80,7 @@
       .condiciones-box {
         max-width: 100%;
         width: 100%;
-        margin-top: 18px;
+        margin-top: 22px;
         border-left: none;
         border-top: 5px solid #FF007A;
       }
@@ -86,63 +88,96 @@
     .mcc {
       font-weight: bold;
       color: #5600EF;
-      font-size: 1.15em;
-      margin-bottom: 4px;
+      font-size: 1.13em;
+      margin-bottom: 6px;
       letter-spacing: 0.5px;
     }
     .desc {
-      color: #444;
-      margin-bottom: 10px;
-      font-size: 1.02em;
+      color: #222;
+      margin-bottom: 12px;
+      font-size: 1.01em;
     }
     .label {
       font-weight: bold;
-      color: #5600EF;
+      color: #222;
       letter-spacing: 0.2px;
+      margin-top: 18px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .section-space {
+      margin-top: 22px;
+      margin-bottom: 10px;
     }
     .table-responsive {
       width: 100%;
       overflow-x: auto;
-      margin-top: 12px;
+      margin-top: 18px;
+      margin-bottom: 18px;
       background: transparent;
       border-radius: 5px;
     }
     .restric-table {
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       min-width: 700px;
       width: 100%;
-      font-size: 0.97em;
+      font-size: 0.93em;
       background: #fff;
       margin-bottom: 10px;
     }
     .restric-table th {
       background: #5600EF;
       color: #fff;
-      border: 1.5px solid #FF007A;
+      border: 2px solid #FF007A;
       font-weight: 700;
       letter-spacing: 0.5px;
+      padding: 10px 12px;
+      font-size: 0.97em;
     }
     .restric-table td {
-      border: 1.5px solid #FF007A;
-      color: #333;
+      border: 2px solid #FF007A;
+      color: #222;
       background: #fff;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 0.92em;
       transition: background 0.2s, color 0.2s;
     }
-    /* Colores condicionales */
-    .permitido {
-      background: #e6fbe9 !important;
-      color: #1a7f37 !important;
+    /* Badges para condiciones */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px 4px 10px;
+      border-radius: 16px;
+      font-size: 0.93em;
       font-weight: bold;
+      text-align: center;
+      min-width: 90px;
+      margin: 2px 0;
+      border: 1.5px solid transparent;
+      justify-content: center;
     }
-    .restringido {
-      background: #fffbe6 !important;
-      color: #b59a00 !important;
-      font-weight: bold;
+    .badge-permitido {
+      background: #e6fbe9;
+      color: #1a7f37;
+      border-color: #1a7f37;
     }
-    .prohibido {
-      background: #ffe6ec !important;
-      color: #d6003a !important;
-      font-weight: bold;
+    .badge-restringido {
+      background: #fffbe6;
+      color: #b59a00;
+      border-color: #b59a00;
+    }
+    .badge-prohibido {
+      background: #ffe6ec;
+      color: #d6003a;
+      border-color: #d6003a;
+    }
+    .badge svg {
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: middle;
     }
     .noresult {
       color: #FF007A;
@@ -160,7 +195,7 @@
       font-family: inherit;
       font-size: 1em;
       margin: 0;
-      color: #5600EF;
+      color: #222;
     }
     /* Scrollbar custom para tablas y tarjetas */
     .table-responsive::-webkit-scrollbar,
@@ -173,6 +208,14 @@
     .card::-webkit-scrollbar-thumb {
       background: #FF007A;
       border-radius: 4px;
+    }
+    @media (max-width: 700px) {
+      body { margin: 8px; }
+      .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
+      .condiciones-box { padding: 12px 8px; }
+      .restric-table { min-width: 480px; font-size: 0.89em; }
+      .restric-table th, .restric-table td { padding: 7px 6px; }
+      input { width: 98vw; max-width: 99vw; }
     }
   </style>
 </head>
@@ -188,14 +231,20 @@
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
 
-    // Función para asignar clase según valor
-    function getRestricClass(valor) {
+    // Función para mostrar badge según valor
+    function getBadge(valor) {
       if (!valor) return '';
       const v = valor.toString().toLowerCase();
-      if (v.includes('permitido')) return 'permitido';
-      if (v.includes('restringido')) return 'restringido';
-      if (v.includes('prohibido')) return 'prohibido';
-      return '';
+      if (v.includes('permitido')) return `<span class="badge badge-permitido">
+        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        Permitido</span>`;
+      if (v.includes('restringido')) return `<span class="badge badge-restringido">
+        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
+        Restringido</span>`;
+      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
+        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        Prohibido</span>`;
+      return valor;
     }
 
     // Cargar el JSON al iniciar la página
@@ -247,6 +296,7 @@
             <div><span class="label">Riesgo:</span> ${row["Riesgo LAyFT"] || ""}</div>
             <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
             <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
+            <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">Restricciones por país:</span>
               <table class="restric-table">
@@ -256,11 +306,12 @@
                 <tr>
                   ${paises.map(p=>{
                     const val = row[p]||"";
-                    return `<td class="${getRestricClass(val)}">${val}</td>`;
+                    return `<td>${getBadge(val)}</td>`;
                   }).join('')}
                 </tr>
               </table>
             </div>
+            <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">Medios de pago:</span>
               <table class="restric-table">
@@ -270,7 +321,7 @@
                 <tr>
                   ${medios.map(m=>{
                     const val = row[m]||"";
-                    return `<td class="${getRestricClass(val)}">${val}</td>`;
+                    return `<td>${getBadge(val)}</td>`;
                   }).join('')}
                 </tr>
               </table>
