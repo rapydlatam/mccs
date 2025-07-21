@@ -235,13 +235,13 @@
     function getBadge(valor) {
       if (!valor) return '';
       const v = valor.toString().toLowerCase();
-      if (v.includes('permitido')) return `<span class="badge badge-permitido">
+      if (v.includes('')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         Permitido</span>`;
-      if (v.includes('restringido')) return `<span class="badge badge-restringido">
+      if (v.includes('')) return `<span class="badge badge-restringido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
         Restringido</span>`;
-      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
+      if (v.includes('')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
         Prohibido</span>`;
       return valor;
