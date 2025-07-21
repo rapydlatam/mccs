@@ -5,7 +5,219 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* ... (todo el CSS igual que antes, lo puedes copiar del ejemplo anterior) ... */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
+      color: #222;
+    }
+    h2 {
+      color: #5600EF;
+      letter-spacing: 1px;
+      font-weight: 800;
+      margin-bottom: 28px;
+    }
+    input {
+      padding: 10px;
+      width: 280px;
+      border-radius: 6px;
+      border: 1.5px solid #5600EF;
+      font-size: 1em;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.07);
+      margin-bottom: 36px;
+      color: #222;
+    }
+    input:focus {
+      border: 2px solid #FF007A;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(255,0,122,0.13);
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(86,0,239,0.07);
+      margin-bottom: 38px;
+      padding: 28px 32px 32px 32px;
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      box-sizing: border-box;
+      align-items: flex-start;
+      overflow-x: auto;
+      border: 1.5px solid #FF007A;
+      transition: box-shadow 0.2s, border 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 6px 24px rgba(86,0,239,0.18);
+      border: 2px solid #5600EF;
+    }
+    .card-content {
+      flex: 2 1 0;
+      min-width: 260px;
+      max-width: 100%;
+    }
+    .condiciones-box {
+      flex: 1 1 320px;
+      min-width: 220px;
+      max-width: 400px;
+      background: #f7f7fa;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-size: 1em;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.08);
+      margin-top: 0;
+      margin-bottom: 10px;
+      margin-left: 0;
+      max-height: 350px;
+      overflow-y: auto;
+      border-left: 5px solid #FF007A;
+    }
+    @media (max-width: 1100px) {
+      .card { flex-direction: column; }
+      .condiciones-box {
+        max-width: 100%;
+        width: 100%;
+        margin-top: 22px;
+        border-left: none;
+        border-top: 5px solid #FF007A;
+      }
+    }
+    .mcc {
+      font-weight: bold;
+      color: #5600EF;
+      font-size: 1.13em;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .desc {
+      color: #222;
+      margin-bottom: 12px;
+      font-size: 1.01em;
+    }
+    .label {
+      font-weight: bold;
+      color: #222;
+      letter-spacing: 0.2px;
+      margin-top: 18px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .section-space {
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 18px;
+      margin-bottom: 18px;
+      background: transparent;
+      border-radius: 5px;
+    }
+    .restric-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 700px;
+      width: 100%;
+      font-size: 0.89em;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+    .restric-table th {
+      background: #5600EF;
+      color: #fff;
+      border: 2px solid #FF007A;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      font-size: 0.97em;
+      text-align: center;
+    }
+    .restric-table td {
+      border: 2px solid #FF007A;
+      color: #222;
+      background: #fff;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 0.89em;
+      transition: background 0.2s, color 0.2s;
+      vertical-align: middle;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 12px 3px 8px;
+      border-radius: 16px;
+      font-size: 0.95em;
+      font-weight: bold;
+      text-align: center;
+      min-width: 80px;
+      margin: 2px 0;
+      border: 1.5px solid transparent;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .badge-permitido {
+      background: #e6fbe9;
+      color: #1a7f37;
+      border-color: #1a7f37;
+    }
+    .badge-restringido {
+      background: #fffbe6;
+      color: #b59a00;
+      border-color: #b59a00;
+    }
+    .badge-prohibido {
+      background: #ffe6ec;
+      color: #d6003a;
+      border-color: #d6003a;
+    }
+    .badge svg {
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: middle;
+    }
+    .noresult {
+      color: #FF007A;
+      margin-top: 24px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .loading {
+      color: #888;
+      margin-top: 24px;
+      font-size: 1.05em;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: inherit;
+      font-size: 1em;
+      margin: 0;
+      color: #222;
+    }
+    .table-responsive::-webkit-scrollbar,
+    .card::-webkit-scrollbar {
+      height: 8px;
+      background: #fff0fa;
+      border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb,
+    .card::-webkit-scrollbar-thumb {
+      background: #FF007A;
+      border-radius: 4px;
+    }
+    @media (max-width: 700px) {
+      body { margin: 8px; }
+      .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
+      .condiciones-box { padding: 12px 8px; }
+      .restric-table { min-width: 480px; font-size: 0.85em; }
+      .restric-table th, .restric-table td { padding: 7px 6px; }
+      input { width: 98vw; max-width: 99vw; }
+    }
   </style>
 </head>
 <body>
@@ -27,8 +239,6 @@
       "PA": ["Metrobank", "FISERV"],
       "BR": ["REDE", "CIELO"]
     };
-
-    // ... (getBadge y getBadgeRestric igual que antes) ...
 
     function getBadge(val, label) {
       if (!val) return '';
@@ -86,7 +296,84 @@
       return html;
     }
 
-    // ... (el resto igual: fetch, filtrarMCC, etc) ...
+    // Cargar el JSON al iniciar la página
+    fetch('csvjson.json')
+      .then(res => {
+        if (!res.ok) throw new Error('No se pudo cargar el archivo csvjson.json');
+        return res.json();
+      })
+      .then(json => {
+        datos = json;
+        datosCargados = true;
+        document.getElementById('mccInput').disabled = false;
+        document.getElementById('resultados').innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
+      })
+      .catch(err => {
+        document.getElementById('resultados').innerHTML = '<div class="noresult">Error cargando los datos: ' + err.message + '</div>';
+      });
+
+    function filtrarMCC() {
+      if (!datosCargados) return;
+      const texto = document.getElementById('mccInput').value.trim().toLowerCase();
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
+
+      if (texto === '') {
+        resultados.innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
+        return;
+      }
+
+      // Filtrar por MCC, actividad, descripción, subcategoría
+      const coincidencias = datos.filter(row =>
+        (row.MCC && row.MCC.toString().toLowerCase().includes(texto)) ||
+        (row["Actividad"] && row["Actividad"].toLowerCase().includes(texto)) ||
+        (row["MCC CODE DESCRIPTION ES"] && row["MCC CODE DESCRIPTION ES"].toLowerCase().includes(texto)) ||
+        (row["Categroria / Subcategoria"] && row["Categroria / Subcategoria"].toLowerCase().includes(texto))
+      );
+
+      if (coincidencias.length === 0) {
+        resultados.innerHTML = '<div class="noresult">No hay coincidencias</div>';
+        return;
+      }
+
+      coincidencias.forEach((row, idx) => {
+        let html = `<div class="card">
+          <div class="card-content">
+            <div class="mcc">MCC: ${row.MCC} &mdash; ${row["Categroria / Subcategoria"] || ""}</div>
+            <div class="desc">${row["MCC CODE DESCRIPTION ES"] || ""}</div>
+            <div><span class="label">Actividad:</span> ${row["Actividad"] || ""}</div>
+            <div><span class="label">Riesgo:</span> ${row["Riesgo LAyFT"] || ""}</div>
+            <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
+            <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
+            <div class="section-space"></div>
+            <div class="table-responsive">
+              <span class="label">Restricciones por país:</span>
+              <table class="restric-table">
+                <tr>
+                  ${paises.map(p=>`<th>${p}</th>`).join('')}
+                </tr>
+                <tr>
+                  ${paises.map(p=>{
+                    const val = row[p]||"";
+                    return `<td>${getBadgeRestric(val)}</td>`;
+                  }).join('')}
+                </tr>
+              </table>
+            </div>
+            <div class="section-space"></div>
+            <div class="table-responsive">
+              <span class="label">Medios de pago por país:</span>
+              ${generarTablaMediosPorPais(row)}
+            </div>
+          </div>
+          <div class="condiciones-box">
+            <span class="label">Condiciones para vinculación:</span>
+            <pre>${row["Condiciones para vinculación"] || "N/A"}</pre>
+          </div>
+        </div>`;
+        resultados.innerHTML += html;
+      });
+    }
   </script>
 </body>
 </html>
