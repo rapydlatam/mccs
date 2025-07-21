@@ -126,6 +126,23 @@
       border: 1.5px solid #FF007A;
       color: #333;
       background: #fff;
+      transition: background 0.2s, color 0.2s;
+    }
+    /* Colores condicionales */
+    .permitido {
+      background: #e6fbe9 !important;
+      color: #1a7f37 !important;
+      font-weight: bold;
+    }
+    .restringido {
+      background: #fffbe6 !important;
+      color: #b59a00 !important;
+      font-weight: bold;
+    }
+    .alto {
+      background: #ffe6ec !important;
+      color: #d6003a !important;
+      font-weight: bold;
     }
     .noresult {
       color: #FF007A;
@@ -170,6 +187,16 @@
     // Lista de países/medios de pago a mostrar en tabla
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const medios = ["OXXO","IGT","Davivienda","Banorte","Amex","Pago efectivo","Niubiz","Izipay","Amex__1","IGT__1"];
+
+    // Función para asignar clase según valor
+    function getRestricClass(valor) {
+      if (!valor) return '';
+      const v = valor.toString().toLowerCase();
+      if (v.includes('permitido')) return 'permitido';
+      if (v.includes('restringido')) return 'restringido';
+      if (v.includes('alto')) return 'alto';
+      return '';
+    }
 
     // Cargar el JSON al iniciar la página
     fetch('csvjson.json')
@@ -227,7 +254,10 @@
                   ${paises.map(p=>`<th>${p}</th>`).join('')}
                 </tr>
                 <tr>
-                  ${paises.map(p=>`<td>${row[p]||""}</td>`).join('')}
+                  ${paises.map(p=>{
+                    const val = row[p]||"";
+                    return `<td class="${getRestricClass(val)}">${val}</td>`;
+                  }).join('')}
                 </tr>
               </table>
             </div>
@@ -238,7 +268,10 @@
                   ${medios.map(m=>`<th>${m}</th>`).join('')}
                 </tr>
                 <tr>
-                  ${medios.map(m=>`<td>${row[m]||""}</td>`).join('')}
+                  ${medios.map(m=>{
+                    const val = row[m]||"";
+                    return `<td class="${getRestricClass(val)}">${val}</td>`;
+                  }).join('')}
                 </tr>
               </table>
             </div>
