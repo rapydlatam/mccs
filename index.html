@@ -10,6 +10,28 @@
       margin: 40px;
       background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
       color: #222;
+      position: relative;
+    }
+    .logo-top-right {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      z-index: 100;
+    }
+    .logo-top-right img {
+      height: 54px;
+      width: auto;
+      display: block;
+    }
+    @media (max-width: 700px) {
+      .logo-top-right {
+        top: 10px;
+        right: 10px;
+      }
+      .logo-top-right img {
+        height: 38px;
+      }
+      body { margin: 8px; }
     }
     h2 {
       color: #5600EF;
@@ -211,7 +233,6 @@
       border-radius: 4px;
     }
     @media (max-width: 700px) {
-      body { margin: 8px; }
       .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
       .condiciones-box { padding: 12px 8px; }
       .restric-table { min-width: 480px; font-size: 0.85em; }
@@ -221,6 +242,9 @@
   </style>
 </head>
 <body>
+  <div class="logo-top-right">
+    <img src="PayM.jpg" alt="Logo" />
+  </div>
   <h2>Buscador de MCC</h2>
   <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="filtrarMCC()" disabled>
   <div id="resultados" class="loading">Cargando datos...</div>
@@ -255,7 +279,6 @@
         {label: "Multicaja", columna: "Multicaja"},
         {label: "Transbank", columna: "Transbank"},
         {label: "Santader", columna: "Santader__1"}
-        // ...otros de CL
       ],
       "MX": [
         {label: "Banorte", columna: "Banorte"},  
@@ -264,7 +287,6 @@
         {label: "Bancomer", columna: "Bancomer"},  
         {label: "Diestel", columna: "Diestel"},  
         {label: "SPEI", columna: "SPEI"}
-        // ...otros de MX
       ],
       "PE": [
         {label: "Pago efectivo", columna: "Pago efectivo"},  
@@ -281,11 +303,10 @@
         {label: "Prisma", columna: "Prisma"},  
         {label: "Fiserv", columna: "Fiserv"},  
         {label: "Rapipago", columna: "Rapipago"}
-        
       ],
       "PA": [
-        {label: "Metrobank", columna: "Metrobank"}
-        // ...otros de PA
+        {label: "Metrobank", columna: "Metrobank"},
+        {label: "FISERV", columna: "FISERV"}
       ],
       "BR": [
         {label: "FISERV", columna: "FISERV"},  
