@@ -1,59 +1,59 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Buscador en Excel</title>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <title>Buscador de MCC</title>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    input { padding: 8px; width: 220px; }
+    ul { list-style: none; padding: 0; }
+    li { margin-bottom: 10px; background: #f2f2f2; padding: 10px; border-radius: 5px; }
+    .mcc { font-weight: bold; color: #2a5d9f; }
+  </style>
 </head>
 <body>
-    <h1>Buscador en Excel</h1>
-    <input type="file" id="file" accept=".xlsx, .xls">
-    <br><br>
-    <input type="text" id="search" placeholder="Buscar palabra...">
-    <button onclick="buscar()">Buscar</button>
-    <ul id="resultados"></ul>
+  <h2>Buscador de MCC</h2>
+  <input type="text" id="mccInput" placeholder="Escribe el MCC o nombre..." oninput="filtrarMCC()">
+  <ul id="resultados"></ul>
 
-    <script>
-        let datosExcel = [];
+  <script>
+    // Datos de ejemplo "quemados" en el HTML
+    const datos = [
+      {"MCC": "1234", "Nombre": "Restaurantes", "Ciudad": "Bogotá", "OtroDato": "Comida"},
+      {"MCC": "5678", "Nombre": "Supermercados", "Ciudad": "Medellín", "OtroDato": "Alimentos"},
+      {"MCC": "4321", "Nombre": "Hoteles", "Ciudad": "Cali", "OtroDato": "Hospedaje"},
+      {"MCC": "8765", "Nombre": "Gasolineras", "Ciudad": "Barranquilla", "OtroDato": "Combustible"}
+    ];
 
-        document.getElementById('file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                // Tomamos la primera hoja
-                const firstSheet = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheet];
-                datosExcel = XLSX.utils.sheet_to_json(worksheet, {header:1});
-                alert('¡Archivo cargado!');
-            };
-            reader.readAsArrayBuffer(file);
-        });
+    function filtrarMCC() {
+      const texto = document.getElementById('mccInput').value.trim().toLowerCase();
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
 
-        function buscar() {
-            const q = document.getElementById('search').value.toLowerCase();
-            const ul = document.getElementById('resultados');
-            ul.innerHTML = '';
-            if (!datosExcel.length) {
-                ul.innerHTML = '<li>Primero carga un archivo Excel.</li>';
-                return;
-            }
-            let encontrados = 0;
-            datosExcel.forEach((fila, i) => {
-                fila.forEach((celda, j) => {
-                    if (celda && celda.toString().toLowerCase().includes(q)) {
-                        const li = document.createElement('li');
-                        li.textContent = `Fila ${i+1}, Columna ${j+1}: ${celda}`;
-                        ul.appendChild(li);
-                        encontrados++;
-                    }
-                });
-            });
-            if (encontrados === 0) {
-                ul.innerHTML = '<li>No se encontraron resultados.</li>';
-            }
+      if (texto === '') return;
+
+      // Filtrar por MCC o por cualquier otro campo (ejemplo: Nombre)
+      const coincidencias = datos.filter(row =>
+        row.MCC.toLowerCase().includes(texto) ||
+        (row.Nombre && row.Nombre.toLowerCase().includes(texto))
+      );
+
+      if (coincidencias.length === 0) {
+        resultados.innerHTML = '<li>No hay coincidencias</li>';
+        return;
+      }
+
+      coincidencias.forEach(row => {
+        let html = `<li><span class="mcc">MCC: ${row.MCC}</span><br>`;
+        for (let key in row) {
+          if (key !== 'MCC') {
+            html += `<strong>${key}:</strong> ${row[key]}<br>`;
+          }
         }
-    </script>
+        html += '</li>';
+        resultados.innerHTML += html;
+      });
+    }
+  </script>
 </body>
 </html>
