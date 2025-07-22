@@ -26,11 +26,30 @@
       display: block;
       max-height: 80px;
     }
-    .lang-switch {
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .lang-select-top {
+      position: absolute;
+      top: 32px;
+      right: 140px; /* Ajusta según el ancho de tu logo */
+      z-index: 101;
+    }
+    .lang-select-top select {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1em;
+      padding: 6px 16px 6px 10px;
+      border-radius: 6px;
+      border: 1.5px solid #5600EF;
+      background: #fff;
+      color: #5600EF;
+      font-weight: 600;
+      outline: none;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.07);
+      transition: border 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      appearance: none;
+    }
+    .lang-select-top select:focus {
+      border: 2px solid #FF007A;
+      box-shadow: 0 2px 8px rgba(255,0,122,0.13);
     }
     @media (max-width: 700px) {
       .logo-top-right {
@@ -41,8 +60,13 @@
         height: 38px;
       }
       body { margin: 8px; }
-      .lang-switch {
-        margin-bottom: 10px;
+      .lang-select-top {
+        top: 10px;
+        right: 60px;
+      }
+      .lang-select-top select {
+        font-size: 0.95em;
+        padding: 4px 10px 4px 8px;
       }
     }
     h2 {
@@ -275,15 +299,14 @@
   </style>
 </head>
 <body>
-  <div class="lang-switch">
-    <label for="langSelect" style="font-weight:500;">Idioma / Language:</label>
-    <select id="langSelect" onchange="cambiarIdioma()" style="padding:6px 12px;border-radius:6px;border:1.5px solid #5600EF;font-family:'Inter',Arial,sans-serif;">
-      <option value="es">Español</option>
-      <option value="en">English</option>
-    </select>
-  </div>
   <div class="logo-top-right">
     <img src="PayM2.png" alt="Logo" />
+  </div>
+  <div class="lang-select-top">
+    <select id="langSelect" onchange="cambiarIdioma()">
+      <option value="es">ES</option>
+      <option value="en">EN</option>
+    </select>
   </div>
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
   <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
