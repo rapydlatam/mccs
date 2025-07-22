@@ -451,10 +451,11 @@
       return traducciones[idioma][clave] || clave;
     }
 
+    // AJUSTE: badges reconocen permitted, restricted, prohibited
     function getBadge(val, label) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido') || v.includes('allowed')) return `<span class="badge badge-permitido">
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         ${label}
       </span>`;
@@ -472,7 +473,7 @@
     function getBadgeRestric(val) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido') || v.includes('allowed')) return `<span class="badge badge-permitido">
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         ${t('permitido')}
       </span>`;
