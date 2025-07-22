@@ -424,7 +424,7 @@
       const resultados = document.getElementById('resultados');
       resultados.innerHTML = '';
 
-      if (texto === '') {
+      if (texto < 2) {
         resultados.innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
         return;
       }
