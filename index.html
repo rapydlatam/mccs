@@ -26,6 +26,12 @@
       display: block;
       max-height: 80px;
     }
+    .lang-switch {
+      position: absolute;
+      top: 24px;
+      left: 32px;
+      z-index: 101;
+    }
     @media (max-width: 700px) {
       .logo-top-right {
         top: 10px;
@@ -33,6 +39,10 @@
       }
       .logo-top-right img {
         height: 38px;
+      }
+      .lang-switch {
+        top: 10px;
+        left: 10px;
       }
       body { margin: 8px; }
     }
@@ -266,16 +276,88 @@
   </style>
 </head>
 <body>
+  <div class="lang-switch">
+    <select id="langSelect" onchange="cambiarIdioma()" style="padding:6px 12px;border-radius:6px;border:1.5px solid #5600EF;font-family:'Inter',Arial,sans-serif;">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+    </select>
+  </div>
   <div class="logo-top-right">
     <img src="PayM2.png" alt="Logo" />
   </div>
-  <h2>Catálogo de MCC PayU</h2>
+  <h2 id="mainTitle">Catálogo de MCC PayU</h2>
   <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
-    let datos = [];
-    let datosCargados = false;
+    // Traducciones para textos fijos
+    const traducciones = {
+      es: {
+        titulo: "Catálogo de MCC PayU",
+        placeholder: "Busca por MCC, actividad, descripción...",
+        cargando: "Cargando datos...",
+        escribe: "Escribe para buscar un MCC...",
+        error: "Error cargando los datos: ",
+        noresult: "No hay coincidencias",
+        actividad: "Actividad",
+        riesgo: "Riesgo AML",
+        nivel: "Nivel de aprobación",
+        add: "ADD",
+        tpv: "TPV USD$",
+        restric: "Restricciones por país:",
+        medios: "Medios de pago por país:",
+        condiciones: "Condiciones para vinculación:",
+        permitido: "Permitido",
+        restringido: "Restringido",
+        prohibido: "Prohibido"
+      },
+      en: {
+        titulo: "PayU MCC Catalog",
+        placeholder: "Search by MCC, activity, description...",
+        cargando: "Loading data...",
+        escribe: "Type to search for an MCC...",
+        error: "Error loading data: ",
+        noresult: "No matches found",
+        actividad: "Activity",
+        riesgo: "AML Risk",
+        nivel: "Approval level",
+        add: "ADD",
+        tpv: "TPV USD$",
+        restric: "Country restrictions:",
+        medios: "Payment methods by country:",
+        condiciones: "Onboarding conditions:",
+        permitido: "Allowed",
+        restringido: "Restricted",
+        prohibido: "Prohibited"
+      }
+    };
+
+    // Columnas por idioma (ajusta si tu JSON inglés tiene otros nombres)
+    const columnas = {
+      es: {
+        mcc: "MCC",
+        categoria: "Categroria / Subcategoria",
+        desc: "MCC CODE DESCRIPTION ES",
+        actividad: "Actividad",
+        riesgo: "Riesgo LAyFT",
+        nivel: "Nivel de Aprobación",
+        add: "ADD",
+        tpv: "TPV USD$ (CELxDefault)",
+        condiciones: "Condiciones para vinculación"
+      },
+      en: {
+        mcc: "MCC",
+        categoria: "Category / Subcategory",
+        desc: "MCC CODE DESCRIPTION EN",
+        actividad: "Activity",
+        riesgo: "AML Risk",
+        nivel: "Approval Level",
+        add: "ADD",
+        tpv: "TPV USD$ (CELxDefault)",
+        condiciones: "Onboarding Conditions"
+      }
+    };
+
     // Catálogo de medios de pago por país (usa label y columna)
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
@@ -339,25 +421,40 @@
       ]
     };
 
+    // Estado global
+    let idioma = localStorage.getItem('idiomaMCC') || "es";
+    let datos = [];
+    let datosCargados = false;
+
+    // Set select al idioma guardado
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('langSelect').value = idioma;
+      cambiarIdioma(false);
+    });
+
     // DEBOUNCE: Espera 250ms después de que el usuario deja de escribir
     let debounceTimer;
     function debouncedFiltrarMCC() {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(filtrarMCC, 250); // 250 ms de espera
+      debounceTimer = setTimeout(filtrarMCC, 250);
+    }
+
+    function t(clave) {
+      return traducciones[idioma][clave] || clave;
     }
 
     function getBadge(val, label) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido')) return `<span class="badge badge-permitido">
+      if (v.includes('permitido') || v.includes('allowed')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         ${label}
       </span>`;
-      if (v.includes('restringido')) return `<span class="badge badge-restringido">
+      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
         ${label}
       </span>`;
-      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
+      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
         ${label}
       </span>`;
@@ -367,17 +464,17 @@
     function getBadgeRestric(val) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido')) return `<span class="badge badge-permitido">
+      if (v.includes('permitido') || v.includes('allowed')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        Permitido
+        ${t('permitido')}
       </span>`;
-      if (v.includes('restringido')) return `<span class="badge badge-restringido">
+      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
-        Restringido
+        ${t('restringido')}
       </span>`;
-      if (v.includes('prohibido')) return `<span class="badge badge-prohibido">
+      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-        Prohibido
+        ${t('prohibido')}
       </span>`;
       return '';
     }
@@ -402,21 +499,35 @@
       return html;
     }
 
-    // Cargar el JSON al iniciar la página
-    fetch('csvjson.json')
-      .then(res => {
-        if (!res.ok) throw new Error('No se pudo cargar el archivo csvjson.json');
-        return res.json();
-      })
-      .then(json => {
-        datos = json;
-        datosCargados = true;
-        document.getElementById('mccInput').disabled = false;
-        document.getElementById('resultados').innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
-      })
-      .catch(err => {
-        document.getElementById('resultados').innerHTML = '<div class="noresult">Error cargando los datos: ' + err.message + '</div>';
-      });
+    function cambiarIdioma(triggerFiltrar = true) {
+      idioma = document.getElementById('langSelect').value;
+      localStorage.setItem('idiomaMCC', idioma);
+      document.getElementById('mainTitle').textContent = t('titulo');
+      document.getElementById('mccInput').placeholder = t('placeholder');
+      cargarDatos(triggerFiltrar);
+    }
+
+    function cargarDatos(triggerFiltrar = true) {
+      datosCargados = false;
+      document.getElementById('mccInput').disabled = true;
+      document.getElementById('resultados').innerHTML = `<div class="loading">${t('cargando')}</div>`;
+      fetch(idioma === "es" ? "csvjson.json" : "Engcsvjson.json")
+        .then(res => {
+          if (!res.ok) throw new Error(t('error') + res.statusText);
+          return res.json();
+        })
+        .then(json => {
+          datos = json;
+          datosCargados = true;
+          document.getElementById('mccInput').disabled = false;
+          document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
+          // Si ya hay texto en el input, vuelve a filtrar
+          if (triggerFiltrar && document.getElementById('mccInput').value.length > 1) filtrarMCC();
+        })
+        .catch(err => {
+          document.getElementById('resultados').innerHTML = `<div class="noresult">${t('error') + err.message}</div>`;
+        });
+    }
 
     function filtrarMCC() {
       if (!datosCargados) return;
@@ -424,37 +535,40 @@
       const resultados = document.getElementById('resultados');
       resultados.innerHTML = '';
 
-      if (texto < 2) {
-        resultados.innerHTML = '<div class="loading">Escribe para buscar un MCC...</div>';
+      if (texto.length < 2) {
+        resultados.innerHTML = `<div class="loading">${t('escribe')}</div>`;
         return;
       }
 
+      // Columnas según idioma
+      const col = columnas[idioma];
+
       // Filtrar por MCC, actividad, descripción, subcategoría
       const coincidencias = datos.filter(row =>
-        (row.MCC && row.MCC.toString().toLowerCase().includes(texto)) ||
-        (row["Actividad"] && row["Actividad"].toLowerCase().includes(texto)) ||
-        (row["MCC CODE DESCRIPTION ES"] && row["MCC CODE DESCRIPTION ES"].toLowerCase().includes(texto)) ||
-        (row["Categroria / Subcategoria"] && row["Categroria / Subcategoria"].toLowerCase().includes(texto))
+        (row[col.mcc] && row[col.mcc].toString().toLowerCase().includes(texto)) ||
+        (row[col.actividad] && row[col.actividad].toLowerCase().includes(texto)) ||
+        (row[col.desc] && row[col.desc].toLowerCase().includes(texto)) ||
+        (row[col.categoria] && row[col.categoria].toLowerCase().includes(texto))
       );
 
       if (coincidencias.length === 0) {
-        resultados.innerHTML = '<div class="noresult">No hay coincidencias</div>';
+        resultados.innerHTML = `<div class="noresult">${t('noresult')}</div>`;
         return;
       }
 
       coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
           <div class="card-content">
-            <div class="mcc">MCC: ${row.MCC} &mdash; ${row["Categroria / Subcategoria"] || ""}</div>
-            <div class="desc">${row["MCC CODE DESCRIPTION ES"] || ""}</div>
-            <div><span class="label">Actividad:</span> ${row["Actividad"] || ""}</div>
-            <div><span class="label">Riesgo AML:</span> ${row["Riesgo LAyFT"] || ""}</div>
-            <div><span class="label">Nivel de aprobación:</span> ${row["Nivel de Aprobación"] || ""}</div>
-            <div><span class="label">ADD:</span> ${row["ADD"] || ""}</div>
-            <div><span class="label">TPV USD$:</span> ${row["TPV USD$ (CELxDefault)"] || ""}</div>
+            <div class="mcc">MCC: ${row[col.mcc]} &mdash; ${row[col.categoria] || ""}</div>
+            <div class="desc">${row[col.desc] || ""}</div>
+            <div><span class="label">${t('actividad')}:</span> ${row[col.actividad] || ""}</div>
+            <div><span class="label">${t('riesgo')}:</span> ${row[col.riesgo] || ""}</div>
+            <div><span class="label">${t('nivel')}:</span> ${row[col.nivel] || ""}</div>
+            <div><span class="label">${t('add')}:</span> ${row[col.add] || ""}</div>
+            <div><span class="label">${t('tpv')}:</span> ${row[col.tpv] || ""}</div>
             <div class="section-space"></div>
             <div class="table-responsive">
-              <span class="label">Restricciones por país:</span>
+              <span class="label">${t('restric')}</span>
               <table class="restric-table">
                 <tr>
                   ${paises.map(p=>`<th>${p}</th>`).join('')}
@@ -469,13 +583,13 @@
             </div>
             <div class="section-space"></div>
             <div class="table-responsive">
-              <span class="label">Medios de pago por país:</span>
+              <span class="label">${t('medios')}</span>
               ${generarTablaMediosPorPais(row)}
             </div>
           </div>
           <div class="condiciones-box">
-            <span class="label">Condiciones para vinculación:</span>
-            <pre>${row["Condiciones para vinculación"] || "N/A"}</pre>
+            <span class="label">${t('condiciones')}</span>
+            <pre>${row[col.condiciones] || "N/A"}</pre>
           </div>
         </div>`;
         resultados.innerHTML += html;
