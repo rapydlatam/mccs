@@ -27,10 +27,10 @@
       max-height: 80px;
     }
     .lang-switch {
-      position: absolute;
-      top: 24px;
-      left: 32px;
-      z-index: 101;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     @media (max-width: 700px) {
       .logo-top-right {
@@ -40,11 +40,10 @@
       .logo-top-right img {
         height: 38px;
       }
-      .lang-switch {
-        top: 10px;
-        left: 10px;
-      }
       body { margin: 8px; }
+      .lang-switch {
+        margin-bottom: 10px;
+      }
     }
     h2 {
       font-family: 'Inter', Arial, sans-serif;
@@ -277,6 +276,7 @@
 </head>
 <body>
   <div class="lang-switch">
+    <label for="langSelect" style="font-weight:500;">Idioma / Language:</label>
     <select id="langSelect" onchange="cambiarIdioma()" style="padding:6px 12px;border-radius:6px;border:1.5px solid #5600EF;font-family:'Inter',Arial,sans-serif;">
       <option value="es">Español</option>
       <option value="en">English</option>
@@ -332,31 +332,13 @@
       }
     };
 
-    // Columnas por idioma (ajusta si tu JSON inglés tiene otros nombres)
-    const columnas = {
-      es: {
-        mcc: "MCC",
-        categoria: "Categroria / Subcategoria",
-        desc: "MCC CODE DESCRIPTION ES",
-        actividad: "Actividad",
-        riesgo: "Riesgo LAyFT",
-        nivel: "Nivel de Aprobación",
-        add: "ADD",
-        tpv: "TPV USD$ (CELxDefault)",
-        condiciones: "Condiciones para vinculación"
-      },
-      en: {
-        mcc: "MCC",
-        categoria: "Category / Subcategory",
-        desc: "MCC CODE DESCRIPTION EN",
-        actividad: "Activity",
-        riesgo: "AML Risk",
-        nivel: "Approval Level",
-        add: "ADD",
-        tpv: "TPV USD$ (CELxDefault)",
-        condiciones: "Onboarding Conditions"
+    // Busca el valor de la columna, probando varios nombres posibles
+    function getCol(row, ...names) {
+      for (let n of names) {
+        if (row[n] !== undefined && row[n] !== null) return row[n];
       }
-    };
+      return "";
+    }
 
     // Catálogo de medios de pago por país (usa label y columna)
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
@@ -426,13 +408,11 @@
     let datos = [];
     let datosCargados = false;
 
-    // Set select al idioma guardado
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
     });
 
-    // DEBOUNCE: Espera 250ms después de que el usuario deja de escribir
     let debounceTimer;
     function debouncedFiltrarMCC() {
       clearTimeout(debounceTimer);
@@ -521,7 +501,6 @@
           datosCargados = true;
           document.getElementById('mccInput').disabled = false;
           document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
-          // Si ya hay texto en el input, vuelve a filtrar
           if (triggerFiltrar && document.getElementById('mccInput').value.length > 1) filtrarMCC();
         })
         .catch(err => {
@@ -540,15 +519,12 @@
         return;
       }
 
-      // Columnas según idioma
-      const col = columnas[idioma];
-
-      // Filtrar por MCC, actividad, descripción, subcategoría
+      // Busca en ambos idiomas para cada campo
       const coincidencias = datos.filter(row =>
-        (row[col.mcc] && row[col.mcc].toString().toLowerCase().includes(texto)) ||
-        (row[col.actividad] && row[col.actividad].toLowerCase().includes(texto)) ||
-        (row[col.desc] && row[col.desc].toLowerCase().includes(texto)) ||
-        (row[col.categoria] && row[col.categoria].toLowerCase().includes(texto))
+        (getCol(row, "MCC") && getCol(row, "MCC").toString().toLowerCase().includes(texto)) ||
+        (getCol(row, "Actividad", "Activity") && getCol(row, "Actividad", "Activity").toLowerCase().includes(texto)) ||
+        (getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN") && getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN").toLowerCase().includes(texto)) ||
+        (getCol(row, "Categroria / Subcategoria", "Category / Subcategory") && getCol(row, "Categroria / Subcategoria", "Category / Subcategory").toLowerCase().includes(texto))
       );
 
       if (coincidencias.length === 0) {
@@ -559,13 +535,13 @@
       coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
           <div class="card-content">
-            <div class="mcc">MCC: ${row[col.mcc]} &mdash; ${row[col.categoria] || ""}</div>
-            <div class="desc">${row[col.desc] || ""}</div>
-            <div><span class="label">${t('actividad')}:</span> ${row[col.actividad] || ""}</div>
-            <div><span class="label">${t('riesgo')}:</span> ${row[col.riesgo] || ""}</div>
-            <div><span class="label">${t('nivel')}:</span> ${row[col.nivel] || ""}</div>
-            <div><span class="label">${t('add')}:</span> ${row[col.add] || ""}</div>
-            <div><span class="label">${t('tpv')}:</span> ${row[col.tpv] || ""}</div>
+            <div class="mcc">MCC: ${getCol(row, "MCC")} &mdash; ${getCol(row, "Categroria / Subcategoria", "Category / Subcategory") || ""}</div>
+            <div class="desc">${getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN") || ""}</div>
+            <div><span class="label">${t('actividad')}:</span> ${getCol(row, "Actividad", "Activity") || ""}</div>
+            <div><span class="label">${t('riesgo')}:</span> ${getCol(row, "Riesgo LAyFT", "AML Risk") || ""}</div>
+            <div><span class="label">${t('nivel')}:</span> ${getCol(row, "Nivel de Aprobación", "Approval Level") || ""}</div>
+            <div><span class="label">${t('add')}:</span> ${getCol(row, "ADD") || ""}</div>
+            <div><span class="label">${t('tpv')}:</span> ${getCol(row, "TPV USD$ (CELxDefault)") || ""}</div>
             <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">${t('restric')}</span>
@@ -589,7 +565,7 @@
           </div>
           <div class="condiciones-box">
             <span class="label">${t('condiciones')}</span>
-            <pre>${row[col.condiciones] || "N/A"}</pre>
+            <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
           </div>
         </div>`;
         resultados.innerHTML += html;
