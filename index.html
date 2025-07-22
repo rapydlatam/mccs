@@ -19,12 +19,28 @@
       top: 24px;
       right: 32px;
       z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
     .logo-top-right img {
       max-width: 100%;
       height: auto;
       display: block;
       max-height: 80px;
+    }
+    .update-info {
+      margin-top: 4px;
+      font-size: 0.93em;
+      color: #5600EF;
+      opacity: 0.65;
+      font-family: 'Inter', Arial, sans-serif;
+      letter-spacing: 0.1px;
+      z-index: 101;
+      pointer-events: none;
+      user-select: none;
+      text-align: right;
+      width: 100%;
     }
     h2 {
       font-family: 'Inter', Arial, sans-serif;
@@ -86,6 +102,10 @@
       }
       .logo-top-right img {
         height: 38px;
+      }
+      .update-info {
+        font-size: 0.85em;
+        margin-top: 2px;
       }
       body { margin: 8px; }
       .search-lang-row {
@@ -306,6 +326,7 @@
 <body>
   <div class="logo-top-right">
     <img src="PayM2.png" alt="Logo" />
+    <div class="update-info" id="updateInfo"></div>
   </div>
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
   <div class="search-lang-row">
@@ -359,6 +380,16 @@
         prohibido: "Prohibited"
       }
     };
+
+    // Leyenda de actualización
+    const updateTexts = {
+      es: "Actualizado: 22-07-2025 · Merchant Risk",
+      en: "Updated: 07-22-2025 by Merchant Risk"
+    };
+
+    function setUpdateInfo() {
+      document.getElementById('updateInfo').textContent = updateTexts[idioma] || updateTexts['es'];
+    }
 
     // Busca el valor de la columna, probando varios nombres posibles
     function getCol(row, ...names) {
@@ -439,6 +470,7 @@
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
+      setUpdateInfo();
     });
 
     let debounceTimer;
@@ -513,6 +545,7 @@
       localStorage.setItem('idiomaMCC', idioma);
       document.getElementById('mainTitle').textContent = t('titulo');
       document.getElementById('mccInput').placeholder = t('placeholder');
+      setUpdateInfo();
       cargarDatos(triggerFiltrar);
     }
 
