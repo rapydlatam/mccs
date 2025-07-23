@@ -408,8 +408,8 @@
 
     // FECHA Y RESPONSABLE DE ACTUALIZACIÓN
     const updateTexts = {
-      es: "Actualizado: 01-01-2025 · Merchant Risk",
-      en: "Updated: 01-01-2025 by Merchant Risk"
+      es: "Actualizado: 22-07-2025 · Merchant Risk",
+      en: "Updated: 07-22-2025 by Merchant Risk"
     };
 
     function setUpdateInfo() {
@@ -569,3 +569,132 @@
         ${t('permitido')}
       </span>`;
       if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
+        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="9" width="10" height="2" rx="1" fill="#fff"/></svg>
+        ${t('restringido')}
+      </span>`;
+      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
+        <svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        ${t('prohibido')}
+      </span>`;
+      return '';
+    }
+
+    function generarTablaMediosPorPais(row) {
+      let html = `<table class="restric-table"><tr>`;
+      paises.forEach(pais => {
+        html += `<th>${pais}</th>`;
+      });
+      html += `</tr><tr>`;
+      paises.forEach(pais => {
+        html += `<td>`;
+        (mediosPorPais[pais]||[]).forEach(medio => {
+          const val = row[medio.columna];
+          if (val && typeof val === "string" && val.trim() !== "") {
+            html += getBadge(val, medio.label) + "<br>";
+          }
+        });
+        html += `</td>`;
+      });
+      html += `</tr></table>`;
+      return html;
+    }
+
+    function cambiarIdioma(triggerFiltrar = true) {
+      idioma = document.getElementById('langSelect').value;
+      localStorage.setItem('idiomaMCC', idioma);
+      document.getElementById('mainTitle').textContent = t('titulo');
+      document.getElementById('mccInput').placeholder = t('placeholder');
+      setUpdateInfo();
+      cargarDatos(triggerFiltrar);
+    }
+
+    function cargarDatos(triggerFiltrar = true) {
+      datosCargados = false;
+      document.getElementById('mccInput').disabled = true;
+      document.getElementById('resultados').innerHTML = `<div class="loading">${t('cargando')}</div>`;
+      fetch(idioma === "es" ? "csvjson.json" : "Engcsvjson.json")
+        .then(res => {
+          if (!res.ok) throw new Error(t('error') + res.statusText);
+          return res.json();
+        })
+        .then(json => {
+          datos = json;
+          datosCargados = true;
+          document.getElementById('mccInput').disabled = false;
+          document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
+          if (triggerFiltrar && document.getElementById('mccInput').value.length > 1) filtrarMCC();
+        })
+        .catch(err => {
+          document.getElementById('resultados').innerHTML = `<div class="noresult">${t('error') + err.message}</div>`;
+        });
+    }
+
+    function filtrarMCC() {
+      if (!datosCargados) return;
+      const texto = document.getElementById('mccInput').value.trim().toLowerCase();
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
+
+      if (texto.length < 2) {
+        resultados.innerHTML = `<div class="loading">${t('escribe')}</div>`;
+        return;
+      }
+
+      // Busca en ambos idiomas para cada campo
+      const coincidencias = datos.filter(row =>
+        (getCol(row, "MCC") && getCol(row, "MCC").toString().toLowerCase().includes(texto)) ||
+        (getCol(row, "Actividad", "Activity") && getCol(row, "Actividad", "Activity").toLowerCase().includes(texto)) ||
+        (getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN") && getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN").toLowerCase().includes(texto)) ||
+        (getCol(row, "Categroria / Subcategoria", "Category / Subcategory") && getCol(row, "Categroria / Subcategoria", "Category / Subcategory").toLowerCase().includes(texto))
+      );
+
+      if (coincidencias.length === 0) {
+        resultados.innerHTML = `<div class="noresult">${t('noresult')}</div>`;
+        return;
+      }
+
+      coincidencias.forEach((row, idx) => {
+        let html = `<div class="card">
+          <div class="card-content">
+            <div class="mcc">MCC: ${getCol(row, "MCC")} &mdash; ${getCol(row, "Categroria / Subcategoria", "Category / Subcategory") || ""}</div>
+            <div class="desc">${getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN") || ""}</div>
+            <div><span class="label">${t('actividad')}:</span> ${getCol(row, "Actividad", "Activity") || ""}</div>
+            <div><span class="label">${t('riesgo')}:</span> ${getCol(row, "Riesgo LAyFT", "AML Risk") || ""}</div>
+            <div><span class="label">${t('nivel')}:</span> ${getCol(row, "Nivel de Aprobación", "Approval Level") || ""}</div>
+            <div><span class="label">${t('add')}:</span> ${getCol(row, "ADD") || ""}</div>
+            <div><span class="label">${t('tpv')}:</span> ${getCol(row, "TPV USD$ (CELxDefault)") || ""}</div>
+            <div class="section-space"></div>
+            <div class="table-responsive">
+              <span class="label">${t('restric')}</span>
+              <table class="restric-table">
+                <tr>
+                  ${paises.map(p=>`<th>${p}</th>`).join('')}
+                </tr>
+                <tr>
+                  ${paises.map(p=>{
+                    const val = row[p]||"";
+                    return `<td>${getBadgeRestric(val)}</td>`;
+                  }).join('')}
+                </tr>
+              </table>
+            </div>
+            <div class="section-space"></div>
+            <div class="table-responsive">
+              <span class="label">${t('medios')}</span>
+              ${generarTablaMediosPorPais(row)}
+            </div>
+          </div>
+          <div class="condiciones-box">
+            <span class="label">${t('condiciones')}</span>
+            <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
+          </div>
+          <div class="leyenda-condiciones">
+            ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
+          </div>
+        </div>`;
+        resultados.innerHTML += html;
+      });
+    }
+  </script>
+</body>
+</html>
