@@ -171,6 +171,9 @@
       overflow-y: auto;
       border-left: 5px solid #FF007A;
       font-family: 'Inter', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
     @media (max-width: 1100px) {
       .card { flex-direction: column; }
@@ -687,9 +690,9 @@
           <div class="condiciones-box">
             <span class="label">${t('condiciones')}</span>
             <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
-          </div>
-          <div class="leyenda-condiciones">
-            ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
+            <div class="leyenda-condiciones">
+              ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
+            </div>
           </div>
         </div>`;
         resultados.innerHTML += html;
