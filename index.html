@@ -156,17 +156,22 @@
       min-width: 260px;
       max-width: 100%;
     }
-    .condiciones-box {
-      flex: 1 1 320px;
+    .condiciones-leyenda-col {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
       min-width: 220px;
       max-width: 400px;
+      flex: 1 1 320px;
+    }
+    .condiciones-box {
       background: #f7f7fa;
       border-radius: 8px;
       padding: 18px 20px;
       font-size: 1em;
       box-shadow: 0 1px 4px rgba(255,0,122,0.08);
       margin-top: 0;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       margin-left: 0;
       max-height: 350px;
       overflow-y: auto;
@@ -178,10 +183,14 @@
     }
     @media (max-width: 1100px) {
       .card { flex-direction: column; }
-      .condiciones-box {
+      .condiciones-leyenda-col {
         max-width: 100%;
         width: 100%;
         margin-top: 22px;
+      }
+      .condiciones-box {
+        max-width: 100%;
+        width: 100%;
         border-left: none;
         border-top: 5px solid #FF007A;
       }
@@ -326,6 +335,7 @@
     }
     @media (max-width: 700px) {
       .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
+      .condiciones-leyenda-col { padding: 0; }
       .condiciones-box { padding: 12px 8px; }
       .restric-table { min-width: 480px; font-size: 0.85em; }
       .restric-table th, .restric-table td { padding: 7px 6px; }
@@ -349,6 +359,11 @@
     @media (min-width: 1101px) {
       .card {
         align-items: flex-start;
+      }
+      .condiciones-leyenda-col {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 400px;
       }
       .leyenda-condiciones.leyenda-outside {
         flex-basis: 100%;
@@ -711,12 +726,14 @@
               ${generarTablaMediosPorPais(row)}
             </div>
           </div>
-          <div class="condiciones-box">
-            <span class="label">${t('condiciones')}</span>
-            <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
-          </div>
-          <div class="leyenda-condiciones leyenda-outside">
-            ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
+          <div class="condiciones-leyenda-col">
+            <div class="condiciones-box">
+              <span class="label">${t('condiciones')}</span>
+              <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
+            </div>
+            <div class="leyenda-condiciones leyenda-outside">
+              ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
+            </div>
           </div>
         </div>`;
         resultados.innerHTML += html;
