@@ -4,9 +4,29 @@
   <title>Catálogo de MCC PayU</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Google Fonts: Inter -->
+  <!-- Fuente Inter de Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* --- ESTILOS GENERALES Y DE LAYOUT --- */
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 40px;
+      background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
+      color: #222;
+      position: relative;
+    }
+    h2 {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 35%, #FF4FA0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+    /* --- LOGO Y FECHA DE ACTUALIZACIÓN --- */
     .logo-top-right {
       position: absolute;
       top: 24px;
@@ -48,25 +68,7 @@
         margin-top: 2px;
       }
     }
-
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      margin: 40px;
-      background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
-      color: #222;
-      position: relative;
-    }
-    h2 {
-      font-family: 'Inter', Arial, sans-serif;
-      background: linear-gradient(90deg, #5600EF 0%, #FF007A 35%, #FF4FA0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-      font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 28px;
-    }
+    /* --- BARRA DE BÚSQUEDA Y SELECTOR DE IDIOMA --- */
     .search-lang-row {
       display: flex;
       align-items: center;
@@ -128,6 +130,7 @@
         height: 38px;
       }
     }
+    /* --- TARJETA DE RESULTADO --- */
     .card {
       background: #fff;
       border-radius: 12px;
@@ -156,6 +159,7 @@
       min-width: 260px;
       max-width: 100%;
     }
+    /* --- COLUMNA DE CONDICIONES Y LEYENDA --- */
     .condiciones-leyenda-col {
       display: flex;
       flex-direction: column;
@@ -195,6 +199,7 @@
         border-top: 5px solid #FF007A;
       }
     }
+    /* --- ESTILOS DE TEXTOS Y SECCIONES --- */
     .mcc {
       font-family: 'Inter', Arial, sans-serif;
       font-weight: bold;
@@ -226,6 +231,7 @@
       margin-top: 22px;
       margin-bottom: 10px;
     }
+    /* --- TABLAS DE RESTRICCIONES Y MEDIOS DE PAGO --- */
     .table-responsive {
       width: 100%;
       overflow-x: auto;
@@ -266,6 +272,7 @@
       vertical-align: middle;
       font-family: 'Inter', Arial, sans-serif;
     }
+    /* --- BADGES DE ESTADO --- */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -302,6 +309,7 @@
       height: 1.1em;
       vertical-align: middle;
     }
+    /* --- MENSAJES DE ESTADO --- */
     .noresult {
       color: #FF007A;
       margin-top: 24px;
@@ -322,6 +330,7 @@
       margin: 0;
       color: #222;
     }
+    /* --- SCROLLBAR PERSONALIZADO --- */
     .table-responsive::-webkit-scrollbar,
     .card::-webkit-scrollbar {
       height: 8px;
@@ -340,8 +349,7 @@
       .restric-table { min-width: 480px; font-size: 0.85em; }
       .restric-table th, .restric-table td { padding: 7px 6px; }
     }
-
-    /* Leyenda de condiciones debajo de la caja, nunca al lado */
+    /* --- LEYENDA DE CONDICIONES --- */
     .leyenda-condiciones.leyenda-outside {
       margin-top: 12px;
       margin-bottom: 0;
@@ -378,7 +386,6 @@
         gap: 6px;
       }
     }
-    /* Badge style for leyenda (keep consistent) */
     .leyenda-condiciones .badge {
       font-size: 0.93em;
       padding: 2px 12px 2px 6px;
@@ -392,10 +399,13 @@
 <body>
   <!-- LOGO Y FECHA DE ACTUALIZACIÓN -->
   <div class="logo-top-right">
+    <!-- Cambia el src por el logo que uses -->
     <img src="PayM2.png" alt="Logo" />
     <div class="update-info" id="updateInfo"></div>
   </div>
+  <!-- TÍTULO PRINCIPAL -->
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
+  <!-- BARRA DE BÚSQUEDA Y SELECTOR DE IDIOMA -->
   <div class="search-lang-row">
     <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
     <select id="langSelect" onchange="cambiarIdioma()">
@@ -403,10 +413,11 @@
       <option value="en">EN</option>
     </select>
   </div>
+  <!-- RESULTADOS DE BÚSQUEDA -->
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
-    // Traducciones para textos fijos
+    // --- TRADUCCIONES DE TEXTOS FIJOS ---
     const traducciones = {
       es: {
         titulo: "Catálogo de MCC PayU",
@@ -419,7 +430,7 @@
         riesgo: "Riesgo AML",
         nivel: "Nivel de aprobación",
         add: "ADD",
-        tpv: "TPV USD$",
+        tpv: "Riesgo de crédito", // Cambiado aquí
         restric: "Restricciones por país:",
         medios: "Medios de pago por país:",
         condiciones: "Condiciones para vinculación:",
@@ -438,7 +449,7 @@
         riesgo: "AML Risk",
         nivel: "Approval level",
         add: "ADD",
-        tpv: "TPV USD$",
+        tpv: "Credit risk", // Cambiado aquí
         restric: "Country restrictions:",
         medios: "Payment methods by country:",
         condiciones: "Onboarding conditions:",
@@ -448,17 +459,18 @@
       }
     };
 
-    // FECHA Y RESPONSABLE DE ACTUALIZACIÓN
+    // --- FECHA Y RESPONSABLE DE ACTUALIZACIÓN ---
     const updateTexts = {
-      es: "Actualizado: 01-01-2025 · Merchant Risk",
-      en: "Updated: 01-01-2025 by Merchant Risk"
+      es: "Actualizado: 22-07-2025 · Merchant Risk",
+      en: "Updated: 07-22-2025 by Merchant Risk"
     };
 
+    // Función para mostrar la fecha de actualización según idioma
     function setUpdateInfo() {
       document.getElementById('updateInfo').textContent = updateTexts[idioma] || updateTexts['es'];
     }
 
-    // Leyendas para condiciones (con look and feel de badges)
+    // --- LEYENDAS DE CONDICIONES (BADGES) ---
     const leyendasCondiciones = {
       es: [
         { tipo: "restric", texto: "Restringido: Sujeto a condiciones específicas." },
@@ -470,6 +482,7 @@
       ]
     };
 
+    // Renderiza el badge de la leyenda según tipo
     function renderLeyendaBadge(tipo, texto) {
       if (tipo === "restric") {
         return `<span class="badge badge-restringido">
@@ -492,7 +505,7 @@
       return "";
     }
 
-    // Busca el valor de la columna, probando varios nombres posibles
+    // --- UTILIDAD PARA OBTENER EL VALOR DE UNA COLUMNA (MULTI-IDIOMA) ---
     function getCol(row, ...names) {
       for (let n of names) {
         if (row[n] !== undefined && row[n] !== null) return row[n];
@@ -500,7 +513,7 @@
       return "";
     }
 
-    // Catálogo de medios de pago por país (usa label y columna)
+    // --- CATÁLOGO DE MEDIOS DE PAGO POR PAÍS ---
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
       "CO": [
@@ -563,28 +576,31 @@
       ]
     };
 
-    // Estado global
+    // --- ESTADO GLOBAL ---
     let idioma = localStorage.getItem('idiomaMCC') || "es";
     let datos = [];
     let datosCargados = false;
 
+    // --- INICIALIZACIÓN AL CARGAR LA PÁGINA ---
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
       setUpdateInfo();
     });
 
+    // --- DEBOUNCE PARA LA BÚSQUEDA ---
     let debounceTimer;
     function debouncedFiltrarMCC() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(filtrarMCC, 250);
     }
 
+    // --- TRADUCTOR DE CLAVES ---
     function t(clave) {
       return traducciones[idioma][clave] || clave;
     }
 
-    // AJUSTE: badges reconocen permitted, restricted, prohibited
+    // --- BADGES DE ESTADO (PERMITIDO, RESTRINGIDO, PROHIBIDO) ---
     function getBadge(val, label) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
@@ -603,6 +619,7 @@
       return '';
     }
 
+    // --- BADGES PARA TABLA DE RESTRICCIONES ---
     function getBadgeRestric(val) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
@@ -621,6 +638,7 @@
       return '';
     }
 
+    // --- GENERA LA TABLA DE MEDIOS DE PAGO POR PAÍS ---
     function generarTablaMediosPorPais(row) {
       let html = `<table class="restric-table"><tr>`;
       paises.forEach(pais => {
@@ -641,6 +659,7 @@
       return html;
     }
 
+    // --- CAMBIA EL IDIOMA Y RECARGA DATOS ---
     function cambiarIdioma(triggerFiltrar = true) {
       idioma = document.getElementById('langSelect').value;
       localStorage.setItem('idiomaMCC', idioma);
@@ -650,6 +669,7 @@
       cargarDatos(triggerFiltrar);
     }
 
+    // --- CARGA LOS DATOS DEL JSON SEGÚN IDIOMA ---
     function cargarDatos(triggerFiltrar = true) {
       datosCargados = false;
       document.getElementById('mccInput').disabled = true;
@@ -671,6 +691,7 @@
         });
     }
 
+    // --- FILTRA LOS MCC SEGÚN EL TEXTO DE BÚSQUEDA ---
     function filtrarMCC() {
       if (!datosCargados) return;
       const texto = document.getElementById('mccInput').value.trim().toLowerCase();
@@ -695,6 +716,7 @@
         return;
       }
 
+      // --- GENERA LA TARJETA PARA CADA COINCIDENCIA ---
       coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
           <div class="card-content">
@@ -704,7 +726,15 @@
             <div><span class="label">${t('riesgo')}:</span> ${getCol(row, "Riesgo LAyFT", "AML Risk") || ""}</div>
             <div><span class="label">${t('nivel')}:</span> ${getCol(row, "Nivel de Aprobación", "Approval Level") || ""}</div>
             <div><span class="label">${t('add')}:</span> ${getCol(row, "ADD") || ""}</div>
-            <div><span class="label">${t('tpv')}:</span> ${getCol(row, "TPV USD$ (CELxDefault)") || ""}</div>
+            <!-- CAMBIO: Riesgo de crédito como link -->
+            <div>
+              <span class="label">${t('tpv')}:</span>
+              <a href="https://apps.powerapps.com/play/e/5e56a28f-6f80-ee2a-bbe1-23ca6e20ce5e/a/1391cece-c56a-4636-b380-545c764c792a?tenantId=674203d4-4c70-4e82-b36b-ec018d680a26&amp;hint=60caecef-093e-4661-b739-1a0b6f7875d6&amp;sourcetime=1747232223984&source=teamsLinkUnfurling"
+                 target="_blank" rel="noopener noreferrer"
+                 style="color:#5600EF;font-weight:600;text-decoration:underline;">
+                ${t('tpv')}
+              </a>
+            </div>
             <div class="section-space"></div>
             <div class="table-responsive">
               <span class="label">${t('restric')}</span>
