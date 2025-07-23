@@ -145,6 +145,7 @@
       border: 1.5px solid #FF007A;
       transition: box-shadow 0.2s, border 0.2s;
       font-family: 'Inter', Arial, sans-serif;
+      position: relative;
     }
     .card:hover {
       box-shadow: 0 6px 24px rgba(86,0,239,0.18);
@@ -330,16 +331,39 @@
       .restric-table th, .restric-table td { padding: 7px 6px; }
     }
 
-    /* Leyenda de condiciones debajo de onboarding */
-    .leyenda-condiciones {
-      margin-top: 10px;
-      font-size: 0.93em;
-      font-family: 'Inter', Arial, sans-serif;
-      opacity: 0.92;
+    /* Leyenda de condiciones debajo de la caja, nunca al lado */
+    .leyenda-condiciones.leyenda-outside {
+      margin-top: 12px;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      font-size: 0.93em;
+      font-family: 'Inter', Arial, sans-serif;
+      opacity: 0.92;
+      order: 99;
     }
+    @media (min-width: 1101px) {
+      .card {
+        align-items: flex-start;
+      }
+      .leyenda-condiciones.leyenda-outside {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 1100px) {
+      .leyenda-condiciones.leyenda-outside {
+        margin-top: 10px;
+        font-size: 0.89em;
+        gap: 6px;
+      }
+    }
+    /* Badge style for leyenda (keep consistent) */
     .leyenda-condiciones .badge {
       font-size: 0.93em;
       padding: 2px 12px 2px 6px;
@@ -411,8 +435,8 @@
 
     // FECHA Y RESPONSABLE DE ACTUALIZACIÓN
     const updateTexts = {
-      es: "Actualizado: 01-01-2025 · Merchant Risk",
-      en: "Updated: 01-01-2025 by Merchant Risk"
+      es: "Actualizado: 22-07-2025 · Merchant Risk",
+      en: "Updated: 07-22-2025 by Merchant Risk"
     };
 
     function setUpdateInfo() {
@@ -690,9 +714,9 @@
           <div class="condiciones-box">
             <span class="label">${t('condiciones')}</span>
             <pre>${getCol(row, "Condiciones para vinculación", "Onboarding conditions") || "N/A"}</pre>
-            <div class="leyenda-condiciones">
-              ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
-            </div>
+          </div>
+          <div class="leyenda-condiciones leyenda-outside">
+            ${leyendasCondiciones[idioma].map(l => renderLeyendaBadge(l.tipo, l.texto)).join('')}
           </div>
         </div>`;
         resultados.innerHTML += html;
