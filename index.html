@@ -399,13 +399,10 @@
 <body>
   <!-- LOGO Y FECHA DE ACTUALIZACIÓN -->
   <div class="logo-top-right">
-    <!-- Cambia el src por el logo que uses -->
     <img src="PayM2.png" alt="Logo" />
     <div class="update-info" id="updateInfo"></div>
   </div>
-  <!-- TÍTULO PRINCIPAL -->
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
-  <!-- BARRA DE BÚSQUEDA Y SELECTOR DE IDIOMA -->
   <div class="search-lang-row">
     <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
     <select id="langSelect" onchange="cambiarIdioma()">
@@ -413,7 +410,6 @@
       <option value="en">EN</option>
     </select>
   </div>
-  <!-- RESULTADOS DE BÚSQUEDA -->
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
@@ -430,7 +426,7 @@
         riesgo: "Riesgo AML",
         nivel: "Nivel de aprobación",
         add: "ADD",
-        tpv: "Riesgo de crédito", // Cambiado aquí
+        tpv: "Riesgo de crédito",
         restric: "Restricciones por país:",
         medios: "Medios de pago por país:",
         condiciones: "Condiciones para vinculación:",
@@ -449,7 +445,7 @@
         riesgo: "AML Risk",
         nivel: "Approval level",
         add: "ADD",
-        tpv: "Credit risk", // Cambiado aquí
+        tpv: "Credit risk",
         restric: "Country restrictions:",
         medios: "Payment methods by country:",
         condiciones: "Onboarding conditions:",
@@ -465,7 +461,6 @@
       en: "Updated: 01-01-2025 by Merchant Risk"
     };
 
-    // Función para mostrar la fecha de actualización según idioma
     function setUpdateInfo() {
       document.getElementById('updateInfo').textContent = updateTexts[idioma] || updateTexts['es'];
     }
@@ -473,17 +468,28 @@
     // --- LEYENDAS DE CONDICIONES (BADGES) ---
     const leyendasCondiciones = {
       es: [
-        { tipo: "restric", texto: "Restringido: Sujeto a condiciones específicas." },
-        { tipo: "prohib", texto: "Prohibido: No elegible para aprobación." }
+        { tipo: "permitido", texto: "Permitido: Actividades autorizadas con requisitos generales de KYC según prevalidación." },
+        { tipo: "restric", texto: "Restringido: Actividades que requieren condiciones adicionales (licencias, aprobaciones, requisitos financieros o KYC reforzado) según el riesgo y la política GPO." },
+        { tipo: "prohib", texto: "Prohibido: Actividades no elegibles para vinculación." }
       ],
       en: [
-        { tipo: "restric", texto: "Restricted: Subject to specific conditions." },
-        { tipo: "prohib", texto: "Prohibited: Not eligible for approval." }
+        { tipo: "permitido", texto: "Allowed: Activities authorized with general KYC requirements as per pre-validation." },
+        { tipo: "restric", texto: "Restricted: Activities requiring additional conditions (licenses, approvals, financial requirements, or enhanced KYC) based on risk and GPO policy." },
+        { tipo: "prohib", texto: "Prohibited: Activities not eligible for onboarding." }
       ]
     };
 
     // Renderiza el badge de la leyenda según tipo
     function renderLeyendaBadge(tipo, texto) {
+      if (tipo === "permitido") {
+        return `<span class="badge badge-permitido">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="vertical-align:middle;width:1.1em;height:1.1em;">
+            <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+            <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+          ${texto}
+        </span>`;
+      }
       if (tipo === "restric") {
         return `<span class="badge badge-restringido">
           <svg viewBox="0 0 20 20" fill="currentColor" style="vertical-align:middle;width:1.1em;height:1.1em;">
@@ -505,7 +511,7 @@
       return "";
     }
 
-    // --- UTILIDAD PARA OBTENER EL VALOR DE UNA COLUMNA (MULTI-IDIOMA) ---
+    // Busca el valor de la columna, probando varios nombres posibles
     function getCol(row, ...names) {
       for (let n of names) {
         if (row[n] !== undefined && row[n] !== null) return row[n];
@@ -513,7 +519,7 @@
       return "";
     }
 
-    // --- CATÁLOGO DE MEDIOS DE PAGO POR PAÍS ---
+    // Catálogo de medios de pago por país (usa label y columna)
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
       "CO": [
@@ -576,31 +582,28 @@
       ]
     };
 
-    // --- ESTADO GLOBAL ---
+    // Estado global
     let idioma = localStorage.getItem('idiomaMCC') || "es";
     let datos = [];
     let datosCargados = false;
 
-    // --- INICIALIZACIÓN AL CARGAR LA PÁGINA ---
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
       setUpdateInfo();
     });
 
-    // --- DEBOUNCE PARA LA BÚSQUEDA ---
     let debounceTimer;
     function debouncedFiltrarMCC() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(filtrarMCC, 250);
     }
 
-    // --- TRADUCTOR DE CLAVES ---
     function t(clave) {
       return traducciones[idioma][clave] || clave;
     }
 
-    // --- BADGES DE ESTADO (PERMITIDO, RESTRINGIDO, PROHIBIDO) ---
+    // AJUSTE: badges reconocen permitted, restricted, prohibited
     function getBadge(val, label) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
@@ -619,7 +622,6 @@
       return '';
     }
 
-    // --- BADGES PARA TABLA DE RESTRICCIONES ---
     function getBadgeRestric(val) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
@@ -638,7 +640,6 @@
       return '';
     }
 
-    // --- GENERA LA TABLA DE MEDIOS DE PAGO POR PAÍS ---
     function generarTablaMediosPorPais(row) {
       let html = `<table class="restric-table"><tr>`;
       paises.forEach(pais => {
@@ -659,7 +660,6 @@
       return html;
     }
 
-    // --- CAMBIA EL IDIOMA Y RECARGA DATOS ---
     function cambiarIdioma(triggerFiltrar = true) {
       idioma = document.getElementById('langSelect').value;
       localStorage.setItem('idiomaMCC', idioma);
@@ -669,7 +669,6 @@
       cargarDatos(triggerFiltrar);
     }
 
-    // --- CARGA LOS DATOS DEL JSON SEGÚN IDIOMA ---
     function cargarDatos(triggerFiltrar = true) {
       datosCargados = false;
       document.getElementById('mccInput').disabled = true;
@@ -691,7 +690,6 @@
         });
     }
 
-    // --- FILTRA LOS MCC SEGÚN EL TEXTO DE BÚSQUEDA ---
     function filtrarMCC() {
       if (!datosCargados) return;
       const texto = document.getElementById('mccInput').value.trim().toLowerCase();
@@ -716,7 +714,6 @@
         return;
       }
 
-      // --- GENERA LA TARJETA PARA CADA COINCIDENCIA ---
       coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
           <div class="card-content">
@@ -726,7 +723,7 @@
             <div><span class="label">${t('riesgo')}:</span> ${getCol(row, "Riesgo LAyFT", "AML Risk") || ""}</div>
             <div><span class="label">${t('nivel')}:</span> ${getCol(row, "Nivel de Aprobación", "Approval Level") || ""}</div>
             <div><span class="label">${t('add')}:</span> ${getCol(row, "ADD") || ""}</div>
-            <!-- CAMBIO: Riesgo de crédito como link -->
+            <!-- Riesgo de crédito como link -->
             <div>
               <span class="label">${t('tpv')}:</span>
               <a href="https://apps.powerapps.com/play/e/5e56a28f-6f80-ee2a-bbe1-23ca6e20ce5e/a/1391cece-c56a-4636-b380-545c764c792a?tenantId=674203d4-4c70-4e82-b36b-ec018d680a26&amp;hint=60caecef-093e-4661-b739-1a0b6f7875d6&amp;sourcetime=1747232223984&source=teamsLinkUnfurling"
