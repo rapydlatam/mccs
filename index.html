@@ -525,46 +525,56 @@
 
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
-      "CO": [
-        {label: "PSE", columna: "PSE"},  
-        {label: "Efecty", columna: "Efecty"},  
-        {label: "OXXO", columna: "OXXO"},  
-        {label: "Codensa", columna: "Codensa"},  
-        {label: "IGT", columna: "IGT"},  
-        {label: "Davivienda", columna: "Davivienda"},  
-        {label: "Ding", columna: "Ding"},  
-        {label: "Bancolombia", columna: "Bancolombia"},  
-        {label: "Nequi", columna: "Nequi"},  
-        {label: "Botón", columna: "Botón"},  
-        {label: "Movii", columna: "Movii"},  
-        {label: "Scotiabank", columna: "Scotiabank"},  
-        {label: "ACH", columna: "ACH"},  
-        {label: "Matrix", columna: "Matrix"},  
-        {label: "TC", columna: "TC"},  
-        {label: "Banco Occidente", columna: "Banco Occidente"},  
-        {label: "BBVA", columna: "BBVA"}
-      ],
+      "CO": [  
+        { "label": "PSE", "columna": "PSE" },  
+        { "label": "PSE Ding", "columna": "PSE Ding" },  
+        { "label": "Bre-B Ding", "columna": "Bre-B Ding" },  
+        { "label": "Efecty", "columna": "Efecty" },  
+        { "label": "OXXO", "columna": "OXXO" },  
+        { "label": "Codensa", "columna": "Codensa" },  
+        { "label": "IGT", "columna": "IGT" },  
+        { "label": "Davivienda", "columna": "Davivienda" },  
+        { "label": "Ding", "columna": "Ding" },  
+        { "label": "Bancolombia", "columna": "Bancolombia" },  
+        { "label": "Nequi", "columna": "Nequi" },  
+        { "label": "Botón", "columna": "Botón" },  
+        { "label": "Movii", "columna": "Movii" },  
+        { "label": "Banco de Bogotá", "columna": "Banco de Bogotá" },  
+        { "label": "Scotiabank", "columna": "Scotiabank" },  
+        { "label": "Scotiabank Colpatria", "columna": "Scotiabank Colpatria" },  
+        { "label": "ACH", "columna": "ACH" },  
+        { "label": "Matrix", "columna": "Matrix" },  
+        { "label": "TC", "columna": "TC" },  
+        { "label": "Banco Occidente", "columna": "Banco Occidente" },  
+        { "label": "BBVA", "columna": "BBVA" }  
+      ]
       "CL": [
-        {label: "IGT", columna: "IGT__1"},
-        {label: "Multicaja", columna: "Multicaja"},
-        {label: "Transbank", columna: "Transbank"},
-        {label: "Santader", columna: "Santader__1"}
-      ],
+        { "label": "IGT", "columna": "IGT__1" },
+        { "label": "Multicaja", "columna": "Multicaja" },
+        { "label": "Transbank", "columna": "Transbank" },
+        { "label": "KLAP", "columna": "KLAP" },
+        { "label": "KHIPU", "columna": "KHIPU" },
+        { "label": "Santander", "columna": "Santander__1" }
+      ]
       "MX": [
-        {label: "Banorte", columna: "Banorte"},  
-        {label: "Amex", columna: "Amex"},  
-        {label: "Santader", columna: "Santader"},  
-        {label: "Bancomer", columna: "Bancomer"},  
-        {label: "Diestel", columna: "Diestel"},  
-        {label: "SPEI", columna: "SPEI"}
-      ],
+        { "label": "Banorte", "columna": "Banorte" },
+        { "label": "Amex", "columna": "Amex" },
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "OXXO", "columna": "OXXO" },
+        { "label": "Seven Eleven", "columna": "Seven Eleven" },
+        { "label": "Santander", "columna": "Santander" },
+        { "label": "Bancomer", "columna": "Bancomer" },
+        { "label": "Diestel", "columna": "Diestel" },
+        { "label": "SPEI", "columna": "SPEI" }
+      ]
       "PE": [
         {label: "Pago efectivo", columna: "Pago efectivo"},  
         {label: "Amex PR", columna: "Amex PR"},  
         {label: "Procesos MC", columna: "Procesos MC"},  
         {label: "Visanet", columna: "Visanet"},  
         {label: "Niubiz", columna: "Niubiz"},  
-        {label: "Izipay", columna: "Izipay"}
+        {label: "Izipay", columna: "Izipay"},
+        {label: "YAPE", columna: "YAPE"}
       ],
       "AR": [
         {label: "Amex", columna: "Amex__1"},  
@@ -572,16 +582,21 @@
         {label: "Pagofacil", columna: "Pagofacil"},  
         {label: "Prisma", columna: "Prisma"},  
         {label: "Fiserv", columna: "Fiserv"},  
-        {label: "Rapipago", columna: "Rapipago"}
+        {label: "Rapipago", columna: "Rapipago"},
+        {label: "Payway", columna: "Payway"}
       ],
       "PA": [
         {label: "Metrobank", columna: "Metrobank"},
         {label: "FISERV", columna: "FISERV"}
       ],
       "BR": [
-        {label: "FISERV", columna: "FISERV"},  
-        {label: "REDE", columna: "REDE"},  
-        {label: "CIELO", columna: "CIELO"}
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "REDE", "columna": "REDE" },
+        { "label": "CIELO", "columna": "CIELO" },
+        { "label": "SIGMA", "columna": "SIGMA" },
+        { "label": "PIX - REDE", "columna": "PIX - REDE" },
+        { "label": "PIX - QI TECH", "columna": "PIX - QI TECH" },
+        { "label": "BOLETO", "columna": "BOLETO" }
       ]
     };
 
