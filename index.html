@@ -384,7 +384,7 @@
       white-space: normal !important;
       max-width: 420px;
       min-width: 0;
-      padding: 4px 10px 4px 8px;  /* padding más pequeño, opcional */
+      padding: 4px 10px 4px 8px;
       font-size: 0.8em;
       line-height: 1.3;
       box-sizing: border-box;
@@ -402,6 +402,52 @@
       vertical-align: middle;
       margin-right: 4px;
     }
+
+    /* NUEVO: estilos de acciones CSV (import/export) */
+    .csv-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .button {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 0.95em;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 100%);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(86,0,239,0.18);
+      transition: transform 0.05s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+    .button:hover {
+      box-shadow: 0 6px 18px rgba(86,0,239,0.22);
+    }
+    .button:active {
+      transform: translateY(1px);
+    }
+    .button.secondary {
+      background: #fff;
+      color: #5600EF;
+      border: 1.5px solid #5600EF;
+    }
+    .button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .csv-hint {
+      font-size: 0.86em;
+      color: #5600EF;
+      opacity: 0.75;
+      width: 100%;
+    }
+    @media (max-width: 700px) {
+      .csv-actions { gap: 6px; }
+      .button { padding: 8px 10px; font-size: 0.9em; }
+    }
   </style>
 </head>
 <body>
@@ -410,13 +456,32 @@
     <div class="update-info" id="updateInfo"></div>
   </div>
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
-  <div class="search-lang-row">
+
+  <!-- NUEVO: fila con import/export/restablecer -->
+  <div class="search-lang-row" style="flex-wrap: wrap">
     <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
     <select id="langSelect" onchange="cambiarIdioma()">
       <option value="es">ES</option>
       <option value="en">EN</option>
     </select>
+
+    <div class="csv-actions">
+      <button class="button" id="btnImportar" onclick="document.getElementById('fileCsv').click()">
+        Importar CSV
+      </button>
+      <input type="file" id="fileCsv" accept=".csv,text/csv" style="display:none" onchange="handleCsvFile(this.files[0])">
+
+      <button class="button" id="btnExportar" onclick="exportarCatalogoCSV()" disabled>
+        Exportar CSV
+      </button>
+
+      <button class="button secondary" id="btnRestablecer" onclick="restablecerDatos()" disabled>
+        Restablecer
+      </button>
+    </div>
+    <div class="csv-hint" id="csvHint"></div>
   </div>
+
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
@@ -438,7 +503,9 @@
         condiciones: "Condiciones para vinculación:",
         permitido: "Permitido",
         restringido: "Restringido",
-        prohibido: "Prohibido"
+        prohibido: "Prohibido",
+        export_hint: "Exportará todas las filas del catálogo actual.",
+        export_filename: "catalogo_mcc_es"
       },
       en: {
         titulo: "PayU MCC Catalog",
@@ -457,7 +524,9 @@
         condiciones: "Onboarding conditions:",
         permitido: "Allowed",
         restringido: "Restricted",
-        prohibido: "Prohibited"
+        prohibido: "Prohibited",
+        export_hint: "This will export all rows in the current catalog.",
+        export_filename: "mcc_catalog_en"
       }
     };
 
@@ -495,7 +564,6 @@
         </span>`;
       }
       if (tipo === "restric") {
-        // Rectángulo más alto para mejor presencia visual
         return `<span class="badge badge-restringido">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#b59a00"/>
@@ -604,10 +672,16 @@
     let datos = [];
     let datosCargados = false;
 
+    // NUEVO: soporte import/export/restablecer
+    let datosOriginales = null; // backup
+    let origenActual = 'remoto'; // 'remoto' | 'csv'
+
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
       setUpdateInfo();
+      setCsvHint(t('export_hint'));
+      updateExportButtonState();
     });
 
     let debounceTimer;
@@ -700,6 +774,7 @@
       document.getElementById('mainTitle').textContent = t('titulo');
       document.getElementById('mccInput').placeholder = t('placeholder');
       setUpdateInfo();
+      setCsvHint(t('export_hint'));
       cargarDatos(triggerFiltrar);
     }
 
@@ -717,10 +792,17 @@
           datosCargados = true;
           document.getElementById('mccInput').disabled = false;
           document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
+          // NUEVO: backup y estado para export/restablecer
+          asegurarBackupRemoto();
+          origenActual = 'remoto';
+          enableRestablecer(false);
+          updateExportButtonState();
+
           if (triggerFiltrar && document.getElementById('mccInput').value.length > 1) filtrarMCC();
         })
         .catch(err => {
           document.getElementById('resultados').innerHTML = `<div class="noresult">${t('error') + err.message}</div>`;
+          updateExportButtonState();
         });
     }
 
@@ -797,6 +879,246 @@
         </div>`;
         resultados.innerHTML += html;
       });
+    }
+
+    // ============== NUEVO: utilidades import/export/restablecer ==============
+
+    function setCsvHint(msg = '') {
+      const el = document.getElementById('csvHint');
+      if (el) el.textContent = msg;
+    }
+
+    function enableRestablecer(enable) {
+      const btn = document.getElementById('btnRestablecer');
+      if (!btn) return;
+      btn.disabled = !enable;
+    }
+
+    function updateExportButtonState() {
+      const btn = document.getElementById('btnExportar');
+      if (!btn) return;
+      btn.disabled = !Array.isArray(datos) || datos.length === 0;
+    }
+
+    // Guarda una copia inmutable de los datos remotos la primera vez que se cargan
+    function asegurarBackupRemoto() {
+      if (!datosOriginales && Array.isArray(datos) && datos.length >= 0) {
+        datosOriginales = JSON.parse(JSON.stringify(datos));
+      }
+    }
+
+    // Handler para escoger e importar CSV
+    async function handleCsvFile(file) {
+      if (!file) return;
+      try {
+        document.getElementById('btnImportar').disabled = true;
+        setCsvHint('Importando CSV...');
+        const text = await file.text();
+        const filas = parseCSV(text);
+        if (!filas || filas.length === 0) {
+          throw new Error('El archivo CSV está vacío o no tiene filas.');
+        }
+        const headers = filas[0];
+        const rows = filas.slice(1)
+          .filter(r => r.some(cell => cell !== ''))
+          .map(r => {
+            const obj = {};
+            headers.forEach((h, i) => {
+              const key = (h || '').trim();
+              obj[key] = (r[i] ?? '').toString().trim();
+            });
+            // mapearClaves(obj); // opcional si necesitas normalizar
+            return obj;
+          });
+
+        asegurarBackupRemoto();
+        datos = rows;
+        datosCargados = true;
+        origenActual = 'csv';
+
+        document.getElementById('mccInput').disabled = false;
+        setCsvHint(`CSV importado: ${file.name} (${rows.length} filas).`);
+        enableRestablecer(true);
+        updateExportButtonState();
+
+        filtrarMCC();
+        if (document.getElementById('mccInput').value.trim().length < 2) {
+          document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
+        }
+      } catch (err) {
+        console.error(err);
+        setCsvHint(`Error al importar CSV: ${err.message}`);
+      } finally {
+        document.getElementById('btnImportar').disabled = false;
+        const input = document.getElementById('fileCsv');
+        if (input) input.value = '';
+      }
+    }
+
+    // Parser CSV simple
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let value = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const next = text[i + 1];
+
+        if (inQuotes) {
+          if (c === '"') {
+            if (next === '"') {
+              value += '"';
+              i++;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            value += c;
+          }
+        } else {
+          if (c === '"') {
+            inQuotes = true;
+          } else if (c === ',') {
+            row.push(value);
+            value = '';
+          } else if (c === '\n') {
+            row.push(value);
+            rows.push(row);
+            row = [];
+            value = '';
+          } else if (c === '\r') {
+            continue;
+          } else {
+            value += c;
+          }
+        }
+      }
+      row.push(value);
+      rows.push(row);
+      return rows.filter(r => !(r.length === 1 && r[0] === ''));
+    }
+
+    // Opcional: normalizar nombres de columnas si tu CSV difiere de los keys que usas en render.
+    // function mapearClaves(obj) {
+    //   const mapeo = {
+    //     'MCC': 'MCC',
+    //     'Actividad': 'Actividad',
+    //     'Activity': 'Activity',
+    //     'MCC CODE DESCRIPTION ES': 'MCC CODE DESCRIPTION ES',
+    //     'MCC CODE DESCRIPTION EN': 'MCC CODE DESCRIPTION EN',
+    //     'Categroria / Subcategoria': 'Categroria / Subcategoria',
+    //     'Category / Subcategory': 'Category / Subcategory',
+    //     'Riesgo LAyFT': 'Riesgo LAyFT',
+    //     'AML Risk': 'AML Risk',
+    //     'Nivel de Aprobación': 'Nivel de Aprobación',
+    //     'Approval Level': 'Approval Level',
+    //     'ADD': 'ADD',
+    //     // 'CO': 'CO', 'BR': 'BR', ...
+    //     // medios por país ...
+    //   };
+    //   for (const k in obj) {
+    //     const nuevo = mapeo[k] || k;
+    //     if (nuevo !== k) {
+    //       obj[nuevo] = obj[k];
+    //       delete obj[k];
+    //     }
+    //   }
+    // }
+
+    function restablecerDatos() {
+      if (datosOriginales) {
+        datos = JSON.parse(JSON.stringify(datosOriginales));
+        datosCargados = true;
+        origenActual = 'remoto';
+        setCsvHint('Datos originales restablecidos.');
+        enableRestablecer(false);
+        updateExportButtonState();
+        filtrarMCC();
+        if (document.getElementById('mccInput').value.trim().length < 2) {
+          document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
+        }
+      } else {
+        setCsvHint('Recargando datos originales...');
+        cargarDatos(true);
+      }
+    }
+
+    // Exportar TODO el catálogo actual a CSV (no solo los filtrados)
+    function exportarCatalogoCSV() {
+      if (!Array.isArray(datos) || datos.length === 0) {
+        setCsvHint('No hay datos para exportar.');
+        return;
+      }
+      // Reunir todas las claves presentes en el dataset
+      const keySet = new Set();
+      datos.forEach(row => Object.keys(row || {}).forEach(k => keySet.add(k)));
+
+      // Orden sugerido: columnas más usadas primero, luego las restantes alfabéticas
+      const preferidasES = [
+        'MCC',
+        'Categroria / Subcategoria',
+        'MCC CODE DESCRIPTION ES',
+        'Actividad',
+        'Riesgo LAyFT',
+        'Nivel de Aprobación',
+        'ADD',
+        ...paises, // CO, BR, ...
+      ];
+      const preferidasEN = [
+        'MCC',
+        'Category / Subcategory',
+        'MCC CODE DESCRIPTION EN',
+        'Activity',
+        'AML Risk',
+        'Approval Level',
+        'ADD',
+        ...paises,
+      ];
+      const preferidas = (idioma === 'es') ? preferidasES : preferidasEN;
+
+      const restantes = Array.from(keySet).filter(k => !preferidas.includes(k)).sort((a,b)=>a.localeCompare(b));
+      const headers = [...preferidas.filter(k => keySet.has(k)), ...restantes];
+
+      const csv = arrayToCSV(datos, headers);
+      const fecha = new Date().toISOString().slice(0,10);
+      const nombreBase = traducciones[idioma]?.export_filename || (idioma === 'es' ? 'catalogo_mcc_es' : 'mcc_catalog_en');
+      descargarBlob(csv, `${nombreBase}_${fecha}.csv`, 'text/csv;charset=utf-8;');
+      setCsvHint(`Exportado ${datos.length} filas.`);
+    }
+
+    function arrayToCSV(rows, headers) {
+      const escape = (val) => {
+        if (val === null || val === undefined) return '';
+        let s = String(val);
+        // Normaliza saltos de línea
+        s = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        // Si contiene comas, comillas o saltos de línea, encierra en comillas y escapa comillas dobles
+        if (/[",\n]/.test(s)) {
+          s = '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      };
+      const lines = [];
+      lines.push(headers.map(escape).join(','));
+      for (const row of rows) {
+        const line = headers.map(h => escape(row[h]));
+        lines.push(line.join(','));
+      }
+      return lines.join('\n');
+    }
+
+    function descargarBlob(content, filename, mimetype='application/octet-stream') {
+      const blob = new Blob([content], { type: mimetype });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
