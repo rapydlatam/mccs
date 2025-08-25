@@ -54,17 +54,23 @@
       width: 100%;
     }
     @media (max-width: 700px) {
-      .logo-top-right { top: 10px; right: 10px; }
-      .logo-top-right img { height: 38px; }
-      .update-info { font-size: 0.85em; margin-top: 2px; }
+      .logo-top-right {
+        top: 10px;
+        right: 10px;
+      }
+      .logo-top-right img {
+        height: 38px;
+      }
+      .update-info {
+        font-size: 0.85em;
+        margin-top: 2px;
+      }
     }
-
     .search-lang-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 36px;
-      flex-wrap: wrap;
     }
     .search-lang-row input {
       font-family: 'Inter', Arial, sans-serif;
@@ -85,7 +91,7 @@
     .search-lang-row select {
       font-family: 'Inter', Arial, sans-serif;
       font-size: 1em;
-      padding: 8px 16px;
+      padding: 8px 18px 8px 12px;
       border-radius: 6px;
       border: 1.5px solid #5600EF;
       background: #fff;
@@ -102,63 +108,25 @@
       border: 2px solid #FF007A;
       box-shadow: 0 2px 8px rgba(255,0,122,0.13);
     }
-
-    /* Botón export sutil */
-    .export-wrap {
-      position: relative;
+    @media (max-width: 700px) {
+      h2 {
+        font-size: 1.3em;
+      }
+      .search-lang-row {
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .search-lang-row input {
+        width: 98vw;
+        max-width: 99vw;
+      }
+      .search-lang-row select {
+        font-size: 0.95em;
+        padding: 6px 10px 6px 8px;
+        height: 38px;
+      }
     }
-    .btn-export {
-      font-family: 'Inter', Arial, sans-serif;
-      font-size: 0.95em;
-      font-weight: 600;
-      color: #5600EF;
-      background: #fff;
-      border: 1px solid rgba(86,0,239,0.35);
-      border-radius: 8px;
-      padding: 9px 12px;
-      cursor: pointer;
-      transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
-    .btn-export:hover {
-      box-shadow: 0 4px 12px rgba(86,0,239,0.12);
-      border-color: #5600EF;
-      background: #fff;
-    }
-    .btn-export[disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .export-menu {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      background: #fff;
-      border: 1px solid rgba(86,0,239,0.25);
-      border-radius: 10px;
-      padding: 6px;
-      box-shadow: 0 8px 24px rgba(86,0,239,0.16);
-      display: none;
-      min-width: 180px;
-      z-index: 200;
-    }
-    .export-item {
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #5600EF;
-      font-weight: 600;
-      font-size: 0.92em;
-    }
-    .export-item:hover {
-      background: #fff0fa;
-    }
-    .csv-hint {
-      font-size: 0.86em;
-      color: #5600EF;
-      opacity: 0.75;
-      width: 100%;
-    }
-
     .card {
       background: #fff;
       border-radius: 12px;
@@ -178,50 +146,261 @@
       font-family: 'Inter', Arial, sans-serif;
       position: relative;
     }
-    .card:hover { box-shadow: 0 6px 24px rgba(86,0,239,0.18); border: 2px solid #5600EF; }
-    .card-content { flex: 2 1 0; min-width: 260px; max-width: 100%; }
-    .condiciones-leyenda-col { display: flex; flex-direction: column; align-items: stretch; min-width: 220px; max-width: 400px; flex: 1 1 320px; }
+    .card:hover {
+      box-shadow: 0 6px 24px rgba(86,0,239,0.18);
+      border: 2px solid #5600EF;
+    }
+    .card-content {
+      flex: 2 1 0;
+      min-width: 260px;
+      max-width: 100%;
+    }
+    .condiciones-leyenda-col {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-width: 220px;
+      max-width: 400px;
+      flex: 1 1 320px;
+    }
     .condiciones-box {
-      background: #f7f7fa; border-radius: 8px; padding: 18px 20px; font-size: 1em;
-      box-shadow: 0 1px 4px rgba(255,0,122,0.08); margin: 0; max-height: 350px; overflow-y: auto;
-      border-left: 5px solid #FF007A; font-family: 'Inter', Arial, sans-serif; display: flex; flex-direction: column;
+      background: #f7f7fa;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-size: 1em;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.08);
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-left: 0;
+      max-height: 350px;
+      overflow-y: auto;
+      border-left: 5px solid #FF007A;
+      font-family: 'Inter', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
     @media (max-width: 1100px) {
       .card { flex-direction: column; }
-      .condiciones-box { border-left: none; border-top: 5px solid #FF007A; }
+      .condiciones-leyenda-col {
+        max-width: 100%;
+        width: 100%;
+        margin-top: 22px;
+      }
+      .condiciones-box {
+        max-width: 100%;
+        width: 100%;
+        border-left: none;
+        border-top: 5px solid #FF007A;
+      }
     }
     .mcc {
-      font-family: 'Inter', Arial, sans-serif; font-weight: bold; font-size: 1.13em; margin-bottom: 6px; letter-spacing: 0.5px;
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1.13em;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
       background: linear-gradient(90deg, #5600EF 0%, #FF007A 35%, #FF4FA0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
     }
-    .desc { color: #222; margin-bottom: 12px; font-size: 1.01em; font-family: 'Inter', Arial, sans-serif; }
-    .label { font-family: 'Inter', Arial, sans-serif; font-weight: bold; color: #222; letter-spacing: 0.2px; margin-top: 18px; display: inline-block; margin-bottom: 6px; }
-    .section-space { margin-top: 22px; margin-bottom: 10px; }
-    .table-responsive { width: 100%; overflow-x: auto; margin: 18px 0; background: transparent; border-radius: 5px; }
+    .desc {
+      color: #222;
+      margin-bottom: 12px;
+      font-size: 1.01em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .label {
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: bold;
+      color: #222;
+      letter-spacing: 0.2px;
+      margin-top: 18px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .section-space {
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 18px;
+      margin-bottom: 18px;
+      background: transparent;
+      border-radius: 5px;
+    }
     .restric-table {
-      border-collapse: separate; border-spacing: 0; min-width: 700px; width: 100%; font-size: 0.89em; background: #fff; margin-bottom: 10px; font-family: 'Inter', Arial, sans-serif;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 700px;
+      width: 100%;
+      font-size: 0.89em;
+      background: #fff;
+      margin-bottom: 10px;
+      font-family: 'Inter', Arial, sans-serif;
     }
     .restric-table th {
-      background: #5600EF; color: #fff; border: 1px solid #FF007A; font-weight: 700; letter-spacing: 0.5px; padding: 10px 12px; font-size: 0.97em; text-align: center;
+      background: #5600EF;
+      color: #fff;
+      border: 1px solid #FF007A;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      font-size: 0.97em;
+      text-align: center;
+      font-family: 'Inter', Arial, sans-serif;
     }
     .restric-table td {
-      border: 1px solid #FF007A; color: #222; background: #fff; padding: 8px 10px; text-align: center; font-size: 0.89em; transition: background 0.2s, color 0.2s; vertical-align: middle;
+      border: 1px solid #FF007A;
+      color: #222;
+      background: #fff;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 0.89em;
+      transition: background 0.2s, color 0.2s;
+      vertical-align: middle;
+      font-family: 'Inter', Arial, sans-serif;
     }
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 2px 6px; border-radius: 12px; font-size: 0.8em; font-weight: bold; min-width: 80px; margin: 2px 0; border: 1.5px solid transparent; justify-content: center; white-space: nowrap; }
-    .badge-permitido { background: #e6fbe9; color: #1a7f37; border-color: #1a7f37; }
-    .badge-restringido { background: #fffbe6; color: #b59a00; border-color: #b59a00; }
-    .badge-prohibido { background: #ffe6ec; color: #d6003a; border-color: #d6003a; }
-    .badge svg { width: 1.25em; height: 1.25em; min-width: 1.25em; min-height: 1.25em; margin-right: 4px; }
-    .noresult { color: #FF007A; margin-top: 24px; font-weight: bold; font-size: 1.1em; }
-    .loading { color: #888; margin-top: 24px; font-size: 1.05em; }
-    pre { white-space: pre-wrap; font-family: 'Inter', Arial, sans-serif; font-size: 1em; margin: 0; color: #222; }
-
-    .table-responsive::-webkit-scrollbar, .card::-webkit-scrollbar {
-      height: 8px; background: #fff0fa; border-radius: 4px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;  
+      padding: 2px 8px 2px 6px;  
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: bold;
+      text-align: center;
+      min-width: 80px;
+      margin: 2px 0;
+      border: 1.5px solid transparent;
+      justify-content: center;
+      white-space: nowrap;
+      font-family: 'Inter', Arial, sans-serif;
     }
-    .table-responsive::-webkit-scrollbar-thumb, .card::-webkit-scrollbar-thumb {
-      background: #FF007A; border-radius: 4px;
+    .badge-permitido {
+      background: #e6fbe9;
+      color: #1a7f37;
+      border-color: #1a7f37;
+    }
+    .badge-restringido {
+      background: #fffbe6;
+      color: #b59a00;
+      border-color: #b59a00;
+    }
+    .badge-prohibido {
+      background: #ffe6ec;
+      color: #d6003a;
+      border-color: #d6003a;
+    }
+    .badge svg {
+      width: 1.25em;
+      height: 1.25em;
+      min-width: 1.25em;
+      min-height: 1.25em;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .noresult {
+      color: #FF007A;
+      margin-top: 24px;
+      font-weight: bold;
+      font-size: 1.1em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .loading {
+      color: #888;
+      margin-top: 24px;
+      font-size: 1.05em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1em;
+      margin: 0;
+      color: #222;
+    }
+    .table-responsive::-webkit-scrollbar,
+    .card::-webkit-scrollbar {
+      height: 8px;
+      background: #fff0fa;
+      border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb,
+    .card::-webkit-scrollbar-thumb {
+      background: #FF007A;
+      border-radius: 4px;
+    }
+    @media (max-width: 700px) {
+      .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
+      .condiciones-leyenda-col { padding: 0; }
+      .condiciones-box { padding: 12px 8px; }
+      .restric-table { min-width: 480px; font-size: 0.85em; }
+      .restric-table th, .restric-table td { padding: 7px 6px; }
+    }
+    .leyenda-condiciones.leyenda-outside {
+      margin-top: 12px;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.98em;
+      font-family: 'Inter', Arial, sans-serif;
+      opacity: 0.92;
+      order: 99;
+      align-items: flex-start;
+    }
+    @media (min-width: 1101px) {
+      .card {
+        align-items: flex-start;
+      }
+      .condiciones-leyenda-col {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 400px;
+      }
+      .leyenda-condiciones.leyenda-outside {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 1100px) {
+      .leyenda-condiciones.leyenda-outside {
+        margin-top: 10px;
+        font-size: 0.95em;
+        gap: 6px;
+      }
+    }
+    .leyenda-condiciones .badge {
+      white-space: normal !important;
+      max-width: 420px;
+      min-width: 0;
+      padding: 4px 10px 4px 8px;  /* padding más pequeño, opcional */
+      font-size: 0.8em;
+      line-height: 1.3;
+      box-sizing: border-box;
+      word-break: break-word;
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
+    }
+    .leyenda-condiciones .badge svg {
+      width: 1.25em;
+      height: 1.25em;
+      min-width: 1.25em;
+      min-height: 1.25em;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
     }
   </style>
 </head>
@@ -231,28 +410,13 @@
     <div class="update-info" id="updateInfo"></div>
   </div>
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
-
   <div class="search-lang-row">
     <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
     <select id="langSelect" onchange="cambiarIdioma()">
       <option value="es">ES</option>
       <option value="en">EN</option>
     </select>
-
-    <!-- Botón export sutil con menú -->
-    <div class="export-wrap">
-      <button class="btn-export" id="btnExport" onclick="toggleExportMenu()" disabled>
-        Exportar
-      </button>
-      <div class="export-menu" id="exportMenu">
-        <div class="export-item" onclick="exportarCSV(); closeExportMenu()">Exportar CSV</div>
-        <div class="export-item" onclick="exportarExcel(); closeExportMenu()">Exportar Excel</div>
-      </div>
-    </div>
-
-    <div class="csv-hint" id="csvHint"></div>
   </div>
-
   <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
@@ -274,10 +438,7 @@
         condiciones: "Condiciones para vinculación:",
         permitido: "Permitido",
         restringido: "Restringido",
-        prohibido: "Prohibido",
-        export_hint: "Exporta todo el catálogo cargado (ES o EN).",
-        export_filename_csv: "catalogo_mcc_es",
-        export_filename_xlsx: "catalogo_mcc_es"
+        prohibido: "Prohibido"
       },
       en: {
         titulo: "PayU MCC Catalog",
@@ -296,10 +457,7 @@
         condiciones: "Onboarding conditions:",
         permitido: "Allowed",
         restringido: "Restricted",
-        prohibido: "Prohibited",
-        export_hint: "Exports the full loaded catalog (EN or ES).",
-        export_filename_csv: "mcc_catalog_en",
-        export_filename_xlsx: "mcc_catalog_en"
+        prohibido: "Prohibited"
       }
     };
 
@@ -312,7 +470,7 @@
       document.getElementById('updateInfo').textContent = updateTexts[idioma] || updateTexts['es'];
     }
 
-    // Leyendas y helpers existentes…
+    // LEYENDAS RESUMIDAS
     const leyendasCondiciones = {
       es: [
         { tipo: "permitido", texto: "Permitido: Actividad autorizada con requisitos generales de KYC." },
@@ -337,6 +495,7 @@
         </span>`;
       }
       if (tipo === "restric") {
+        // Rectángulo más alto para mejor presencia visual
         return `<span class="badge badge-restringido">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#b59a00"/>
@@ -366,13 +525,79 @@
 
     const paises = ["CO","BR","AR","PE","CL","MX","PA"];
     const mediosPorPais = {
-      CO:[{label:"PSE",columna:"PSE"},{label:"PSE Ding",columna:"PSE Ding"},{label:"Bre-B Ding",columna:"Bre-B Ding"},{label:"Efecty",columna:"Efecty"},{label:"OXXO",columna:"OXXO"},{label:"Codensa",columna:"Codensa"},{label:"IGT",columna:"IGT"},{label:"Davivienda",columna:"Davivienda"},{label:"Ding",columna:"Ding"},{label:"Bancolombia",columna:"Bancolombia"},{label:"Nequi",columna:"Nequi"},{label:"Botón",columna:"Botón"},{label:"Movii",columna:"Movii"},{label:"Banco de Bogotá",columna:"Banco de Bogotá"},{label:"Scotiabank",columna:"Scotiabank"},{label:"Scotiabank Colpatria",columna:"Scotiabank Colpatria"},{label:"ACH",columna:"ACH"},{label:"Matrix",columna:"Matrix"},{label:"TC",columna:"TC"},{label:"Banco Occidente",columna:"Banco Occidente"},{label:"BBVA",columna:"BBVA"}],
-      CL:[{label:"IGT",columna:"IGT__1"},{label:"Multicaja",columna:"Multicaja"},{label:"Transbank",columna:"Transbank"},{label:"KLAP",columna:"KLAP"},{label:"KHIPU",columna:"KHIPU"},{label:"Santander",columna:"Santander__1"}],
-      MX:[{label:"Banorte",columna:"Banorte"},{label:"Amex",columna:"Amex"},{label:"FISERV",columna:"FISERV"},{label:"OXXO",columna:"OXXO"},{label:"Seven Eleven",columna:"Seven Eleven"},{label:"Santander",columna:"Santander"},{label:"Bancomer",columna:"Bancomer"},{label:"Diestel",columna:"Diestel"},{label:"SPEI",columna:"SPEI"}],
-      PE:[{label:"Pago efectivo",columna:"Pago efectivo"},{label:"Amex PR",columna:"Amex PR"},{label:"Procesos MC",columna:"Procesos MC"},{label:"Visanet",columna:"Visanet"},{label:"Niubiz",columna:"Niubiz"},{label:"Izipay",columna:"Izipay"},{label:"YAPE",columna:"YAPE"}],
-      AR:[{label:"Amex",columna:"Amex__1"},{label:"Cobro Express",columna:"Cobro Express"},{label:"Pagofacil",columna:"Pagofacil"},{label:"Prisma",columna:"Prisma"},{label:"Fiserv",columna:"Fiserv"},{label:"Rapipago",columna:"Rapipago"},{label:"Payway",columna:"Payway"}],
-      PA:[{label:"Metrobank",columna:"Metrobank"},{label:"FISERV",columna:"FISERV"}],
-      BR:[{label:"FISERV",columna:"FISERV"},{label:"REDE",columna:"REDE"},{label:"CIELO",columna:"CIELO"},{label:"SIGMA",columna:"SIGMA"},{label:"PIX - REDE",columna:"PIX - REDE"},{label:"PIX - QI TECH",columna:"PIX - QI TECH"},{label:"BOLETO",columna:"BOLETO"}]
+      "CO": [  
+        { "label": "PSE", "columna": "PSE" },  
+        { "label": "PSE Ding", "columna": "PSE Ding" },  
+        { "label": "Bre-B Ding", "columna": "Bre-B Ding" },  
+        { "label": "Efecty", "columna": "Efecty" },  
+        { "label": "OXXO", "columna": "OXXO" },  
+        { "label": "Codensa", "columna": "Codensa" },  
+        { "label": "IGT", "columna": "IGT" },  
+        { "label": "Davivienda", "columna": "Davivienda" },  
+        { "label": "Ding", "columna": "Ding" },  
+        { "label": "Bancolombia", "columna": "Bancolombia" },  
+        { "label": "Nequi", "columna": "Nequi" },  
+        { "label": "Botón", "columna": "Botón" },  
+        { "label": "Movii", "columna": "Movii" },  
+        { "label": "Banco de Bogotá", "columna": "Banco de Bogotá" },  
+        { "label": "Scotiabank", "columna": "Scotiabank" },  
+        { "label": "Scotiabank Colpatria", "columna": "Scotiabank Colpatria" },  
+        { "label": "ACH", "columna": "ACH" },  
+        { "label": "Matrix", "columna": "Matrix" },  
+        { "label": "TC", "columna": "TC" },  
+        { "label": "Banco Occidente", "columna": "Banco Occidente" },  
+        { "label": "BBVA", "columna": "BBVA" }  
+      ],
+      "CL": [
+        { "label": "IGT", "columna": "IGT__1" },
+        { "label": "Multicaja", "columna": "Multicaja" },
+        { "label": "Transbank", "columna": "Transbank" },
+        { "label": "KLAP", "columna": "KLAP" },
+        { "label": "KHIPU", "columna": "KHIPU" },
+        { "label": "Santander", "columna": "Santander__1" }
+      ],
+      "MX": [
+        { "label": "Banorte", "columna": "Banorte" },
+        { "label": "Amex", "columna": "Amex" },
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "OXXO", "columna": "OXXO" },
+        { "label": "Seven Eleven", "columna": "Seven Eleven" },
+        { "label": "Santander", "columna": "Santander" },
+        { "label": "Bancomer", "columna": "Bancomer" },
+        { "label": "Diestel", "columna": "Diestel" },
+        { "label": "SPEI", "columna": "SPEI" }
+      ],
+      "PE": [
+        {label: "Pago efectivo", columna: "Pago efectivo"},  
+        {label: "Amex PR", columna: "Amex PR"},  
+        {label: "Procesos MC", columna: "Procesos MC"},  
+        {label: "Visanet", columna: "Visanet"},  
+        {label: "Niubiz", columna: "Niubiz"},  
+        {label: "Izipay", columna: "Izipay"},
+        {label: "YAPE", columna: "YAPE"}
+      ],
+      "AR": [
+        {label: "Amex", columna: "Amex__1"},  
+        {label: "Cobro Express", columna: "Cobro Express"},  
+        {label: "Pagofacil", columna: "Pagofacil"},  
+        {label: "Prisma", columna: "Prisma"},  
+        {label: "Fiserv", columna: "Fiserv"},  
+        {label: "Rapipago", columna: "Rapipago"},
+        {label: "Payway", columna: "Payway"}
+      ],
+      "PA": [
+        {label: "Metrobank", columna: "Metrobank"},
+        {label: "FISERV", columna: "FISERV"}
+      ],
+      "BR": [
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "REDE", "columna": "REDE" },
+        { "label": "CIELO", "columna": "CIELO" },
+        { "label": "SIGMA", "columna": "SIGMA" },
+        { "label": "PIX - REDE", "columna": "PIX - REDE" },
+        { "label": "PIX - QI TECH", "columna": "PIX - QI TECH" },
+        { "label": "BOLETO", "columna": "BOLETO" }
+      ]
     };
 
     let idioma = localStorage.getItem('idiomaMCC') || "es";
@@ -383,15 +608,6 @@
       document.getElementById('langSelect').value = idioma;
       cambiarIdioma(false);
       setUpdateInfo();
-      setHint(t('export_hint'));
-      updateExportState();
-      document.addEventListener('click', (e) => {
-        const menu = document.getElementById('exportMenu');
-        const wrap = document.querySelector('.export-wrap');
-        if (menu && wrap && !wrap.contains(e.target)) {
-          closeExportMenu();
-        }
-      });
     });
 
     let debounceTimer;
@@ -404,46 +620,65 @@
       return traducciones[idioma][clave] || clave;
     }
 
-    function setHint(msg='') {
-      const el = document.getElementById('csvHint');
-      if (el) el.textContent = msg;
-    }
-
-    function toggleExportMenu() {
-      const menu = document.getElementById('exportMenu');
-      if (!menu) return;
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-    function closeExportMenu() {
-      const menu = document.getElementById('exportMenu');
-      if (menu) menu.style.display = 'none';
-    }
-    function updateExportState() {
-      const btn = document.getElementById('btnExport');
-      if (btn) btn.disabled = !datosCargados || !Array.isArray(datos) || datos.length === 0;
-    }
-
     function getBadge(val, label) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>${label}</span>`;
-      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/></svg>${label}</span>`;
-      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>${label}</span>`;
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        ${label}
+      </span>`;
+      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+          <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+        </svg>
+        ${label}
+      </span>`;
+      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#d6003a"/>
+          <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        ${label}
+      </span>`;
       return '';
     }
 
     function getBadgeRestric(val) {
       if (!val) return '';
       const v = val.toString().toLowerCase();
-      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#1a7f37"/><path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>${t('permitido')}</span>`;
-      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#b59a00"/><rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/></svg>${t('restringido')}</span>`;
-      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido"><svg viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="10" fill="#d6003a"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>${t('prohibido')}</span>`;
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        ${t('permitido')}
+      </span>`;
+      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+          <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+        </svg>
+        ${t('restringido')}
+      </span>`;
+      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#d6003a"/>
+          <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        ${t('prohibido')}
+      </span>`;
       return '';
     }
 
     function generarTablaMediosPorPais(row) {
       let html = `<table class="restric-table"><tr>`;
-      paises.forEach(pais => { html += `<th>${pais}</th>`; });
+      paises.forEach(pais => {
+        html += `<th>${pais}</th>`;
+      });
       html += `</tr><tr>`;
       paises.forEach(pais => {
         html += `<td>`;
@@ -465,13 +700,11 @@
       document.getElementById('mainTitle').textContent = t('titulo');
       document.getElementById('mccInput').placeholder = t('placeholder');
       setUpdateInfo();
-      setHint(t('export_hint'));
       cargarDatos(triggerFiltrar);
     }
 
     function cargarDatos(triggerFiltrar = true) {
       datosCargados = false;
-      updateExportState();
       document.getElementById('mccInput').disabled = true;
       document.getElementById('resultados').innerHTML = `<div class="loading">${t('cargando')}</div>`;
       fetch(idioma === "es" ? "csvjson.json" : "Engcsvjson.json")
@@ -484,12 +717,10 @@
           datosCargados = true;
           document.getElementById('mccInput').disabled = false;
           document.getElementById('resultados').innerHTML = `<div class="loading">${t('escribe')}</div>`;
-          updateExportState();
           if (triggerFiltrar && document.getElementById('mccInput').value.length > 1) filtrarMCC();
         })
         .catch(err => {
           document.getElementById('resultados').innerHTML = `<div class="noresult">${t('error') + err.message}</div>`;
-          updateExportState();
         });
     }
 
@@ -516,7 +747,7 @@
         return;
       }
 
-      coincidencias.forEach((row) => {
+      coincidencias.forEach((row, idx) => {
         let html = `<div class="card">
           <div class="card-content">
             <div class="mcc">MCC: ${getCol(row, "MCC")} &mdash; ${getCol(row, "Categroria / Subcategoria", "Category / Subcategory") || ""}</div>
@@ -537,8 +768,15 @@
             <div class="table-responsive">
               <span class="label">${t('restric')}</span>
               <table class="restric-table">
-                <tr>${paises.map(p=>`<th>${p}</th>`).join('')}</tr>
-                <tr>${paises.map(p=>`<td>${getBadgeRestric(row[p]||"")}</td>`).join('')}</tr>
+                <tr>
+                  ${paises.map(p=>`<th>${p}</th>`).join('')}
+                </tr>
+                <tr>
+                  ${paises.map(p=>{
+                    const val = row[p]||"";
+                    return `<td>${getBadgeRestric(val)}</td>`;
+                  }).join('')}
+                </tr>
               </table>
             </div>
             <div class="section-space"></div>
@@ -560,84 +798,6 @@
         resultados.innerHTML += html;
       });
     }
-
-    // ---------------- Export helpers ----------------
-    function gatherHeadersPreferidos() {
-      const keySet = new Set();
-      datos.forEach(r => Object.keys(r||{}).forEach(k => keySet.add(k)));
-      const preferidasES = ['MCC','Categroria / Subcategoria','MCC CODE DESCRIPTION ES','Actividad','Riesgo LAyFT','Nivel de Aprobación','ADD', ...paises];
-      const preferidasEN = ['MCC','Category / Subcategory','MCC CODE DESCRIPTION EN','Activity','AML Risk','Approval Level','ADD', ...paises];
-      const preferidas = (idioma === 'es') ? preferidasES : preferidasEN;
-      const restantes = Array.from(keySet).filter(k => !preferidas.includes(k)).sort((a,b)=>a.localeCompare(b));
-      return [...preferidas.filter(k => keySet.has(k)), ...restantes];
-    }
-
-    // CSV
-    function exportarCSV() {
-      if (!Array.isArray(datos) || datos.length === 0) return;
-      const headers = gatherHeadersPreferidos();
-      const csv = arrayToCSV(datos, headers);
-      const fecha = new Date().toISOString().slice(0,10);
-      const nombre = `${traducciones[idioma].export_filename_csv}_${fecha}.csv`;
-      descargarBlob(csv, nombre, 'text/csv;charset=utf-8;');
-      setHint(`CSV exportado (${datos.length} filas).`);
-    }
-
-    function arrayToCSV(rows, headers) {
-      const escape = (val) => {
-        if (val === null || val === undefined) return '';
-        let s = String(val).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        if (/[",\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
-        return s;
-      };
-      const lines = [];
-      lines.push(headers.map(escape).join(','));
-      for (const row of rows) {
-        lines.push(headers.map(h => escape(row[h])).join(','));
-      }
-      return lines.join('\n');
-    }
-
-    // Excel "ligero" (HTML table con mime Excel) – abre en Excel como .xls
-    function exportarExcel() {
-      if (!Array.isArray(datos) || datos.length === 0) return;
-      const headers = gatherHeadersPreferidos();
-      // Construimos una tabla HTML segura
-      const escapeHtml = (s='') => String(s)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;');
-      let html = '<table border="1"><thead><tr>';
-      html += headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
-      html += '</tr></thead><tbody>';
-      for (const row of datos) {
-        html += '<tr>';
-        html += headers.map(h => `<td>${escapeHtml(row[h] ?? '')}</td>`).join('');
-        html += '</tr>';
-      }
-      html += '</tbody></table>';
-
-      const fecha = new Date().toISOString().slice(0,10);
-      const nombre = `${traducciones[idioma].export_filename_xlsx}_${fecha}.xls`;
-      // Usamos el tipo que Excel reconoce para abrir el HTML como hoja de cálculo
-      descargarBlob(html, nombre, 'application/vnd.ms-excel;charset=utf-8;');
-      setHint(`Excel exportado (${datos.length} filas).`);
-    }
-
-    function descargarBlob(content, filename, mimetype='application/octet-stream') {
-      const blob = new Blob([content], { type: mimetype });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-    // ---------------- end export helpers ----------------
-
   </script>
 </body>
 </html>
