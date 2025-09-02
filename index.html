@@ -160,12 +160,10 @@
 
     function exportarDatos(tipo) {
       if (!datosCargados) return;
-      const idioma = document.getElementById("langSelect").value;
 
-      // Tomar claves en el orden del primer registro
-      const columnas = Object.keys(datos[0] || {});
+      // Mantener orden de columnas del JSON
+      const columnas = Object.keys(datos[0]);
 
-      // Mapear filas con ese orden
       const datosExport = datos.map(row => {
         const obj = {};
         columnas.forEach(col => {
@@ -178,6 +176,7 @@
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "MCCs");
 
+      const idioma = document.getElementById("langSelect").value;
       const nombreArchivo = idioma === "es" ? "MCCs_ES" : "MCCs_EN";
 
       if (tipo === "csv") {
