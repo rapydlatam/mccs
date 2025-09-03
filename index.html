@@ -73,7 +73,6 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 36px;
-      flex-wrap: wrap;
     }
     .search-lang-row input {
       font-family: 'Inter', Arial, sans-serif;
@@ -147,31 +146,23 @@
         font-size: 1.3em;
       }
       .search-lang-row {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: row;
+        gap: 8px;
         margin-bottom: 24px;
-        align-items: stretch;
       }
       .search-lang-row input {
-        width: 100%;
-        max-width: 100%;
-      }
-      .search-controls {
-        display: flex;
-        gap: 8px;
-        width: 100%;
+        width: 98vw;
+        max-width: 99vw;
       }
       .search-lang-row select {
         font-size: 0.95em;
         padding: 6px 10px 6px 8px;
         height: 38px;
-        flex: 1;
       }
       .export-btn {
         font-size: 0.95em;
-        padding: 8px 16px;
+        padding: 6px 12px;
         height: 38px;
-        flex: 1;
       }
     }
     .card {
@@ -431,7 +422,7 @@
       white-space: normal !important;
       max-width: 420px;
       min-width: 0;
-      padding: 4px 10px 4px 8px;  /* padding más pequeño, opcional */
+      padding: 4px 10px 4px 8px;
       font-size: 0.8em;
       line-height: 1.3;
       box-sizing: border-box;
@@ -477,18 +468,16 @@
   <h2 id="mainTitle">Catálogo de MCC PayU</h2>
   <div class="search-lang-row">
     <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
-    <div class="search-controls">
-      <select id="langSelect" onchange="cambiarIdioma()">
-        <option value="es">ES</option>
-        <option value="en">EN</option>
-      </select>
-      <button id="exportBtn" class="export-btn" onclick="exportarDatos()" disabled>
-        <svg viewBox="0 0 24 24">
-          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-        </svg>
-        <span id="exportText">Exportar</span>
-      </button>
-    </div>
+    <select id="langSelect" onchange="cambiarIdioma()">
+      <option value="es">ES</option>
+      <option value="en">EN</option>
+    </select>
+    <button id="exportBtn" class="export-btn" onclick="exportarDatos()" disabled>
+      <svg viewBox="0 0 24 24">
+        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+      </svg>
+      <span id="exportText">Exportar</span>
+    </button>
   </div>
   <div id="resultados" class="loading">Cargando datos...</div>
 
@@ -544,7 +533,7 @@
 
     const updateTexts = {
       es: "Actualizado: 29-Jul-2025 · Merchant Risk",
-      en: "Updated: 29-Jul-2025 by Merchant Risk"
+      en: "Updated: 29-Jul-2025 · Merchant Risk"
     };
 
     function setUpdateInfo() {
@@ -576,7 +565,6 @@
         </span>`;
       }
       if (tipo === "restric") {
-        // Rectángulo más alto para mejor presencia visual
         return `<span class="badge badge-restringido">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#b59a00"/>
@@ -708,4 +696,14 @@
       if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
-          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2
+          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        ${label}
+      </span>`;
+      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+          <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+        </svg>
+        ${label}
+      </span>`;
