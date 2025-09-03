@@ -858,24 +858,6 @@
           // Usar la misma lógica del buscador para encontrar el valor correcto
           let valor = getCol(row, h, ...Object.keys(row)); // Intenta con el nombre directo, si no busca en todas las claves
           
-          // Mapeo específico para las columnas con nombres diferentes
-          if (h === "Nivel de Aprobación" && idioma === 'en') {
-            valor = row["Approval Level"] || "";
-          } else if (h === "Approval Level" && idioma === 'es') {
-            valor = row["Nivel de Aprobación"] || "";
-          } else if (h === "Condiciones para vinculación" && idioma === 'en') {
-            valor = row["Onboarding conditions"] || "";
-          } else if (h === "Onboarding conditions" && idioma === 'es') {
-            valor = row["Condiciones para vinculación"] || "";
-          } else if (h === "Botón Bancolombia" && idioma === 'es') {
-            valor = row["Botón"] || "";
-          } else if (h === "Scotiabank Colpatria" && idioma === 'es') {
-            valor = row["Colpatria"] || "";
-          } else if (h === "Amex PR" && idioma === 'es') {
-            valor = row["Amex"] || "";
-          } else if (h === "Amex" && idioma === 'en') {
-            valor = row["Amex__1"] || "";
-          }
     
           let estilo = '';
           const v = String(valor).toLowerCase();
