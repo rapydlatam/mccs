@@ -546,24 +546,24 @@
       return "";
     }
 
-    const paises = ["CO","BR","AR","PE","CL","MX","PA"];
+    const paises = ["CO", "BR", "AR", "PE", "CL", "MX", "PA"];
     const mediosPorPais = {
-      "CO": [  
-        { "label": "PSE Ding", "columna": "PSE Ding" },  
-        { "label": "Bre-B Ding", "columna": "Bre-B Ding" },  
-        { "label": "Efecty", "columna": "Efecty" },  
-        { "label": "OXXO", "columna": "OXXO" },  
+      "CO": [
+        { "label": "PSE Ding", "columna": "PSE Ding" },
+        { "label": "Bre-B Ding", "columna": "Bre-B Ding" },
+        { "label": "Efecty", "columna": "Efecty" },
+        { "label": "OXXO", "columna": "OXXO" },
         { "label": "Codensa", "columna": "Codensa" },
-        { "label": "Davivienda", "columna": "Davivienda" },  
-        { "label": "Ding", "columna": "Ding" },  
-        { "label": "Bancolombia", "columna": "Bancolombia" },  
-        { "label": "Nequi", "columna": "Nequi" },  
-        { "label": "Botón Bancolombia", "columna": "Botón Bancolombia" },  
-        { "label": "Movii", "columna": "Movii" },  
-        { "label": "Banco de Bogotá", "columna": "Banco de Bogotá" }, 
-        { "label": "Scotiabank Colpatria", "columna": "Scotiabank Colpatria" },  
+        { "label": "Davivienda", "columna": "Davivienda" },
+        { "label": "Ding", "columna": "Ding" },
+        { "label": "Bancolombia", "columna": "Bancolombia" },
+        { "label": "Nequi", "columna": "Nequi" },
+        { "label": "Botón Bancolombia", "columna": "Botón Bancolombia" },
+        { "label": "Movii", "columna": "Movii" },
+        { "label": "Banco de Bogotá", "columna": "Banco de Bogotá" },
+        { "label": "Scotiabank Colpatria", "columna": "Scotiabank Colpatria" },
         { "label": "Matrix", "columna": "Matrix" },
-        { "label": "BBVA", "columna": "BBVA" }  
+        { "label": "BBVA", "columna": "BBVA" }
       ],
       "CL": [
         { "label": "Multicaja", "columna": "Multicaja" },
@@ -581,23 +581,23 @@
         { "label": "SPEI", "columna": "SPEI" }
       ],
       "PE": [
-        {label: "Pago efectivo", columna: "Pago efectivo"},  
-        {label: "Amex PR", columna: "Amex PR"},    
-        {label: "Niubiz", columna: "Niubiz"},  
-        {label: "Izipay", columna: "Izipay"},
-        {label: "YAPE", columna: "YAPE"}
+        { label: "Pago efectivo", columna: "Pago efectivo" },
+        { label: "Amex PR", columna: "Amex PR" },
+        { label: "Niubiz", columna: "Niubiz" },
+        { label: "Izipay", columna: "Izipay" },
+        { label: "YAPE", columna: "YAPE" }
       ],
       "AR": [
-        {label: "Amex", columna: "Amex__1"},  
-        {label: "Cobro Express", columna: "Cobro Express"},  
-        {label: "Pagofacil", columna: "Pagofacil"},  
-        {label: "Prisma", columna: "Prisma"},  
-        {label: "Fiserv", columna: "Fiserv"},  
-        {label: "Rapipago", columna: "Rapipago"},
-        {label: "Payway", columna: "Payway"}
+        { label: "Amex", columna: "Amex__1" },
+        { label: "Cobro Express", columna: "Cobro Express" },
+        { label: "Pagofacil", columna: "Pagofacil" },
+        { label: "Prisma", columna: "Prisma" },
+        { label: "Fiserv", columna: "Fiserv" },
+        { label: "Rapipago", columna: "Rapipago" },
+        { label: "Payway", columna: "Payway" }
       ],
       "PA": [
-        {label: "SIGMA", columna: "SIGMA"}
+        { label: "SIGMA", columna: "SIGMA" }
       ],
       "BR": [
         { "label": "FISERV", "columna": "FISERV" },
@@ -652,7 +652,7 @@
         </svg>
         ${label}
       </span>`;
-      return '';
+      return `<span style="display:inline-block; font-size: 0.8em; color:#666; font-style: italic; max-width: 150px; word-wrap: break-word;">${val}</span>`;
     }
 
     function getBadgeRestric(val) {
@@ -690,7 +690,7 @@
       html += `</tr><tr>`;
       paises.forEach(pais => {
         html += `<td>`;
-        (mediosPorPais[pais]||[]).forEach(medio => {
+        (mediosPorPais[pais] || []).forEach(medio => {
           const val = row[medio.columna];
           if (val && typeof val === "string" && val.trim() !== "") {
             html += getBadge(val, medio.label) + "<br>";
@@ -767,8 +767,8 @@
             <div>
               <span class="label">${t('tpv')}:</span>
               <a href="https://apps.powerapps.com/play/e/5e56a28f-6f80-ee2a-bbe1-23ca6e20ce5e/a/1391cece-c56a-4636-b380-545c764c792a?tenantId=674203d4-4c70-4e82-b36b-ec018d680a26&amp;hint=60caecef-093e-4661-b739-1a0b6f7875d6&amp;sourcetime=1747232223984&source=teamsLinkUnfurling"
-                  target="_blank" rel="noopener noreferrer"
-                  style="color:#5600EF;font-weight:600;text-decoration:underline;">
+                target="_blank" rel="noopener noreferrer"
+                style="color:#5600EF;font-weight:600;text-decoration:underline;">
                 ${t('tpv')}
               </a>
             </div>
@@ -777,11 +777,11 @@
               <span class="label">${t('restric')}</span>
               <table class="restric-table">
                 <tr>
-                  ${paises.map(p=>`<th>${p}</th>`).join('')}
+                  ${paises.map(p => `<th>${p}</th>`).join('')}
                 </tr>
                 <tr>
-                  ${paises.map(p=>{
-                    const val = row[p]||"";
+                  ${paises.map(p => {
+                    const val = row[p] || "";
                     return `<td>${getBadgeRestric(val)}</td>`;
                   }).join('')}
                 </tr>
@@ -806,11 +806,10 @@
         resultados.innerHTML += html;
       });
     }
-    
+
     // FUNCIÓN DE EXPORTACIÓN A EXCEL CORREGIDA
     function exportarExcel() {
-      // 1. Definir los encabezados basados en el idioma actual
-      const es_encabezados = [
+      const fixedHeaders = idioma === 'es' ? [
         "MCC",
         "MCC CODE DESCRIPTION ES",
         "Actividad",
@@ -820,62 +819,78 @@
         "Fuente de restricción",
         "Nivel de Aprobación",
         "Condiciones para vinculación"
-      ];
-      const en_encabezados = [
+      ] : [
         "MCC",
-        "MCC CODE DESCRIPTION ES",
-        "Actividad",
-        "Categroria / Subcategoria",
+        "MCC CODE DESCRIPTION EN",
+        "Activity",
+        "Category / Subcategory",
         "ADD",
-        "Riesgo LAyFT",
+        "AML Risk",
         "Fuente de restricción",
         "Approval Level",
         "Onboarding conditions"
       ];
 
-      const encabezados = idioma === 'es' ? es_encabezados : en_encabezados;
-
-      // 2. Agregar los países y sus medios de pago dinámicamente
+      let tablaHtml = '<table><thead>';
+      
+      // Primera fila de encabezados: fijos y países con colspan
+      tablaHtml += '<tr>';
+      fixedHeaders.forEach(h => {
+        tablaHtml += `<th style="background-color:#5600EF; color:#FFFFFF; font-weight:bold; border: 1px solid #FF007A; text-align: center;" rowspan="2">${h}</th>`;
+      });
       paises.forEach(pais => {
-        encabezados.push(pais);
-        if (mediosPorPais[pais]) {
-          mediosPorPais[pais].forEach(medio => {
-            encabezados.push(medio.columna);
-          });
+        const numMedios = (mediosPorPais[pais] || []).length;
+        if (numMedios > 0) {
+          tablaHtml += `<th style="background-color:#5600EF; color:#FFFFFF; font-weight:bold; border: 1px solid #FF007A; text-align: center;" colspan="${numMedios}">${pais}</th>`;
         }
       });
-    
-      // 3. Construir la tabla HTML para la exportación
-      let tablaHtml = '<table><thead><tr>';
-      encabezados.forEach(h => {
-        tablaHtml += `<th style="background-color:#5600EF; color:#FFFFFF; font-weight:bold; border: 1px solid #FF007A;">${h}</th>`;
+      tablaHtml += '</tr>';
+
+      // Segunda fila de encabezados: Medios de pago
+      tablaHtml += '<tr>';
+      paises.forEach(pais => {
+        (mediosPorPais[pais] || []).forEach(medio => {
+          tablaHtml += `<th style="background-color:#FF007A; color:#FFFFFF; font-weight:bold; border: 1px solid #FF007A; text-align: center;">${medio.label}</th>`;
+        });
       });
       tablaHtml += '</tr></thead><tbody>';
-    
+
+      // Datos
       datos.forEach(row => {
         tablaHtml += '<tr>';
-        encabezados.forEach(h => {
-          // Usar la misma lógica del buscador para encontrar el valor correcto
-          let valor = getCol(row, h, ...Object.keys(row)); // Intenta con el nombre directo, si no busca en todas las claves
-          
-    
-          let estilo = '';
-          const v = String(valor).toLowerCase();
-          if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
-            estilo = 'background-color:#e6fbe9;';
-          } else if (v.includes('restringido') || v.includes('restricted')) {
-            estilo = 'background-color:#fffbe6;';
-          } else if (v.includes('prohibido') || v.includes('prohibited')) {
-            estilo = 'background-color:#ffe6ec;';
-          }
-          
-          tablaHtml += `<td style="${estilo} border: 1px solid #FF007A;">${valor}</td>`;
+        
+        // Celdas para las columnas fijas
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "MCC")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "MCC CODE DESCRIPTION ES", "MCC CODE DESCRIPTION EN")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Actividad", "Activity")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Categroria / Subcategoria", "Category / Subcategory")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "ADD")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Riesgo LAyFT", "AML Risk")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Fuente de restricción")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Nivel de Aprobación", "Approval Level")}</td>`;
+        tablaHtml += `<td style="border: 1px solid #FF007A;">${getCol(row, "Condiciones para vinculación", "Onboarding conditions")}</td>`;
+        
+        // Celdas para los medios de pago
+        paises.forEach(pais => {
+          (mediosPorPais[pais] || []).forEach(medio => {
+            const val = getCol(row, medio.columna) || "";
+            let estilo = '';
+            const v = String(val).toLowerCase();
+            if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
+              estilo = 'background-color:#e6fbe9;';
+            } else if (v.includes('restringido') || v.includes('restricted')) {
+              estilo = 'background-color:#fffbe6;';
+            } else if (v.includes('prohibido') || v.includes('prohibited')) {
+              estilo = 'background-color:#ffe6ec;';
+            }
+            tablaHtml += `<td style="${estilo} border: 1px solid #FF007A;">${val}</td>`;
+          });
         });
         tablaHtml += '</tr>';
       });
+      
       tablaHtml += '</tbody></table>';
-    
-      // 4. Codificar y descargar el archivo
+
       const nombreArchivo = `Catalogo_MCC_${idioma}.xls`;
       const uri = 'data:application/vnd.ms-excel;base64,' + btoa(unescape(encodeURIComponent(tablaHtml)));
       const link = document.createElement('a');
