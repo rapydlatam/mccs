@@ -295,6 +295,11 @@
       color: #d6003a;
       border-color: #d6003a;
     }
+    .badge-advertencia {
+      background: #fffae6;
+      color: #b59a00;
+      border-color: #b59a00;
+    }
     .badge svg {
       width: 1.25em;
       height: 1.25em;
@@ -462,7 +467,8 @@
         condiciones: "Condiciones para vinculación:",
         permitido: "Permitido",
         restringido: "Restringido",
-        prohibido: "Prohibido"
+        prohibido: "Prohibido",
+        advertencia: "Advertencia"
       },
       en: {
         titulo: "PayU MCC Catalog",
@@ -481,7 +487,8 @@
         condiciones: "Onboarding conditions:",
         permitido: "Allowed",
         restringido: "Restricted",
-        prohibido: "Prohibited"
+        prohibido: "Prohibited",
+        advertencia: "Warning"
       }
     };
 
@@ -630,34 +637,56 @@
 
     function getBadge(val, label) {
       if (!val) return '';
-      const v = val.toString().toLowerCase();
-      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
-        <svg viewBox="0 0 20 20" fill="currentColor">
-          <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
-          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-        </svg>
-        ${label}
-      </span>`;
-      if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
-        <svg viewBox="0 0 20 20" fill="currentColor">
-          <circle cx="10" cy="10" r="10" fill="#b59a00"/>
-          <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
-        </svg>
-        ${label}
-      </span>`;
-      if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
-        <svg viewBox="0 0 20 20" fill="currentColor">
-          <circle cx="10" cy="10" r="10" fill="#d6003a"/>
-          <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        ${label}
-      </span>`;
+      const v = val.toString().toLowerCase().trim();
+      
+      if (v === '.') return '';
+
+      if (v.includes('exclusive for payment method should not be activated')) {
+        return `<span class="badge badge-advertencia">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM10 4a6 6 0 110 12 6 6 0 010-12zM10 6a.75.75 0 01.75.75v5a.75.75 0 01-1.5 0v-5A.75.75 0 0110 6zM9.25 14a.75.75 0 01.75-.75h.5a.75.75 0 010 1.5h-.5a.75.75 0 01-.75-.75z" fill="#000000" />
+          </svg>
+          ${t('advertencia')}
+        </span>`;
+      }
+      
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
+        return `<span class="badge badge-permitido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+            <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+          ${label}
+        </span>`;
+      }
+      
+      if (v.includes('restringido') || v.includes('restricted')) {
+        return `<span class="badge badge-restringido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+            <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+          </svg>
+          ${label}
+        </span>`;
+      }
+      
+      if (v.includes('prohibido') || v.includes('prohibited')) {
+        return `<span class="badge badge-prohibido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#d6003a"/>
+            <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          ${label}
+        </span>`;
+      }
+      
       return `<span style="display:inline-block; font-size: 0.8em; color:#666; font-style: italic; max-width: 150px; word-wrap: break-word;">${val}</span>`;
     }
 
     function getBadgeRestric(val) {
       if (!val) return '';
-      const v = val.toString().toLowerCase();
+      const v = val.toString().toLowerCase().trim();
+
       if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
@@ -665,6 +694,7 @@
         </svg>
         ${t('permitido')}
       </span>`;
+      
       if (v.includes('restringido') || v.includes('restricted')) return `<span class="badge badge-restringido">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#b59a00"/>
@@ -672,6 +702,7 @@
         </svg>
         ${t('restringido')}
       </span>`;
+      
       if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#d6003a"/>
@@ -679,6 +710,7 @@
         </svg>
         ${t('prohibido')}
       </span>`;
+      
       return '';
     }
 
@@ -692,7 +724,7 @@
         html += `<td>`;
         (mediosPorPais[pais] || []).forEach(medio => {
           const val = row[medio.columna];
-          if (val && typeof val === "string" && val.trim() !== "") {
+          if (val && typeof val === "string" && val.trim() !== "" && val.trim() !== ".") {
             html += getBadge(val, medio.label) + "<br>";
           }
         });
@@ -875,15 +907,21 @@
           (mediosPorPais[pais] || []).forEach(medio => {
             const val = getCol(row, medio.columna) || "";
             let estilo = '';
-            const v = String(val).toLowerCase();
-            if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
+            const v = String(val).toLowerCase().trim();
+            
+            if (v === '.') {
+              estilo = '';
+            } else if (v.includes('exclusive for payment method should not be activated')) {
+              estilo = 'background-color:#fffae6;';
+            } else if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
               estilo = 'background-color:#e6fbe9;';
             } else if (v.includes('restringido') || v.includes('restricted')) {
               estilo = 'background-color:#fffbe6;';
             } else if (v.includes('prohibido') || v.includes('prohibited')) {
               estilo = 'background-color:#ffe6ec;';
             }
-            tablaHtml += `<td style="${estilo} border: 1px solid #FF007A;">${val}</td>`;
+            
+            tablaHtml += `<td style="${estilo} border: 1px solid #FF007A;">${val === '.' ? '' : val}</td>`;
           });
         });
         tablaHtml += '</tr>';
