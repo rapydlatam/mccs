@@ -1,211 +1,711 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MCC Finder</title>
+  <title>Catálogo de MCC PayU</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fuente Inter de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- SheetJS para exportar Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
       font-family: 'Inter', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fafafa;
-      color: #333;
+      margin: 40px;
+      background: linear-gradient(120deg, #fff 0%, #fff0fa 100%);
+      color: #222;
+      position: relative;
     }
-
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
+    h2 {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 35%, #FF4FA0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
     }
-
-    h1 {
-      font-size: 2em;
+    .logo-top-right {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .logo-top-right img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      max-height: 80px;
+    }
+    .update-info {
+      margin-top: 4px;
+      font-size: 0.93em;
       color: #5600EF;
-      margin-bottom: 20px;
+      opacity: 0.65;
+      font-family: 'Inter', Arial, sans-serif;
+      letter-spacing: 0.1px;
+      z-index: 101;
+      pointer-events: none;
+      user-select: none;
+      text-align: right;
+      width: 100%;
     }
-
+    @media (max-width: 700px) {
+      .logo-top-right {
+        top: 10px;
+        right: 10px;
+      }
+      .logo-top-right img {
+        height: 38px;
+      }
+      .update-info {
+        font-size: 0.85em;
+        margin-top: 2px;
+      }
+    }
     .search-lang-row {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
     }
-
-    .search-lang-row input, 
+    .search-lang-row input {
+      font-family: 'Inter', Arial, sans-serif;
+      padding: 10px;
+      width: 280px;
+      border-radius: 6px;
+      border: 1.5px solid #5600EF;
+      font-size: 1em;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.07);
+      color: #222;
+    }
+    .search-lang-row input:focus {
+      border: 2px solid #FF007A;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(255,0,122,0.13);
+    }
     .search-lang-row select {
       font-family: 'Inter', Arial, sans-serif;
       font-size: 1em;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1.5px solid #5600EF;
-      outline: none;
-      flex: 1;
-      box-shadow: 0 1px 4px rgba(255,0,122,0.07);
-    }
-
-    .search-lang-row input:focus {
-      border: 2px solid #FF007A;
-      box-shadow: 0 2px 8px rgba(255,0,122,0.13);
-    }
-
-    .search-lang-row button {
-      font-family: 'Inter', Arial, sans-serif;
-      font-size: 1em;
-      padding: 8px 14px;
+      padding: 8px 18px 8px 12px;
       border-radius: 6px;
       border: 1.5px solid #5600EF;
       background: #fff;
       color: #5600EF;
       font-weight: 600;
+      outline: none;
       box-shadow: 0 1px 4px rgba(255,0,122,0.07);
-      cursor: pointer;
       transition: border 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      appearance: none;
+      height: 42px;
     }
-    .search-lang-row button:hover {
+    .search-lang-row select:focus {
       border: 2px solid #FF007A;
       box-shadow: 0 2px 8px rgba(255,0,122,0.13);
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    th {
-      background: #f9f9f9;
-      color: #5600EF;
+    .export-btn {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 1em;
       font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 1px 4px rgba(86,0,239,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 42px;
+    }
+    .export-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(86,0,239,0.3);
+    }
+    .export-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .export-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+    @media (max-width: 700px) {
+      h2 {
+        font-size: 1.3em;
+      }
+      .search-lang-row {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+        align-items: stretch;
+      }
+      .search-lang-row input {
+        width: 100%;
+        max-width: 100%;
+      }
+      .search-controls {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+      }
+      .search-lang-row select {
+        font-size: 0.95em;
+        padding: 6px 10px 6px 8px;
+        height: 38px;
+        flex: 1;
+      }
+      .export-btn {
+        font-size: 0.95em;
+        padding: 8px 16px;
+        height: 38px;
+        flex: 1;
+      }
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(86,0,239,0.07);
+      margin-bottom: 38px;
+      padding: 28px 32px 32px 32px;
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      box-sizing: border-box;
+      align-items: flex-start;
+      overflow-x: auto;
+      border: 1.5px solid #FF007A;
+      transition: box-shadow 0.2s, border 0.2s;
+      font-family: 'Inter', Arial, sans-serif;
+      position: relative;
+    }
+    .card:hover {
+      box-shadow: 0 6px 24px rgba(86,0,239,0.18);
+      border: 2px solid #5600EF;
+    }
+    .card-content {
+      flex: 2 1 0;
+      min-width: 260px;
+      max-width: 100%;
+    }
+    .condiciones-leyenda-col {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-width: 220px;
+      max-width: 400px;
+      flex: 1 1 320px;
+    }
+    .condiciones-box {
+      background: #f7f7fa;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-size: 1em;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.08);
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-left: 0;
+      max-height: 350px;
+      overflow-y: auto;
+      border-left: 5px solid #FF007A;
+      font-family: 'Inter', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    @media (max-width: 1100px) {
+      .card { flex-direction: column; }
+      .condiciones-leyenda-col {
+        max-width: 100%;
+        width: 100%;
+        margin-top: 22px;
+      }
+      .condiciones-box {
+        max-width: 100%;
+        width: 100%;
+        border-left: none;
+        border-top: 5px solid #FF007A;
+      }
+    }
+    .mcc {
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1.13em;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 35%, #FF4FA0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+    }
+    .desc {
+      color: #222;
+      margin-bottom: 12px;
+      font-size: 1.01em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .label {
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: bold;
+      color: #222;
+      letter-spacing: 0.2px;
+      margin-top: 18px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .section-space {
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 18px;
+      margin-bottom: 18px;
+      background: transparent;
+      border-radius: 5px;
+    }
+    .restric-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 700px;
+      width: 100%;
+      font-size: 0.89em;
+      background: #fff;
+      margin-bottom: 10px;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .restric-table th {
+      background: #5600EF;
+      color: #fff;
+      border: 1px solid #FF007A;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      font-size: 0.97em;
+      text-align: center;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .restric-table td {
+      border: 1px solid #FF007A;
+      color: #222;
+      background: #fff;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 0.89em;
+      transition: background 0.2s, color 0.2s;
+      vertical-align: middle;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;  
+      padding: 2px 8px 2px 6px;  
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: bold;
+      text-align: center;
+      min-width: 80px;
+      margin: 2px 0;
+      border: 1.5px solid transparent;
+      justify-content: center;
+      white-space: nowrap;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .badge-permitido {
+      background: #e6fbe9;
+      color: #1a7f37;
+      border-color: #1a7f37;
+    }
+    .badge-restringido {
+      background: #fffbe6;
+      color: #b59a00;
+      border-color: #b59a00;
+    }
+    .badge-prohibido {
+      background: #ffe6ec;
+      color: #d6003a;
+      border-color: #d6003a;
+    }
+    .badge svg {
+      width: 1.25em;
+      height: 1.25em;
+      min-width: 1.25em;
+      min-height: 1.25em;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .noresult {
+      color: #FF007A;
+      margin-top: 24px;
+      font-weight: bold;
+      font-size: 1.1em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .loading {
+      color: #888;
+      margin-top: 24px;
+      font-size: 1.05em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1em;
+      margin: 0;
+      color: #222;
+    }
+    .table-responsive::-webkit-scrollbar,
+    .card::-webkit-scrollbar {
+      height: 8px;
+      background: #fff0fa;
+      border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb,
+    .card::-webkit-scrollbar-thumb {
+      background: #FF007A;
+      border-radius: 4px;
+    }
+    @media (max-width: 700px) {
+      .card { padding: 12px 4vw 18px 4vw; gap: 18px; }
+      .condiciones-leyenda-col { padding: 0; }
+      .condiciones-box { padding: 12px 8px; }
+      .restric-table { min-width: 480px; font-size: 0.85em; }
+      .restric-table th, .restric-table td { padding: 7px 6px; }
+    }
+    .leyenda-condiciones.leyenda-outside {
+      margin-top: 12px;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.98em;
+      font-family: 'Inter', Arial, sans-serif;
+      opacity: 0.92;
+      order: 99;
+      align-items: flex-start;
+    }
+    @media (min-width: 1101px) {
+      .card {
+        align-items: flex-start;
+      }
+      .condiciones-leyenda-col {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 400px;
+      }
+      .leyenda-condiciones.leyenda-outside {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 1100px) {
+      .leyenda-condiciones.leyenda-outside {
+        margin-top: 10px;
+        font-size: 0.95em;
+        gap: 6px;
+      }
+    }
+    .leyenda-condiciones .badge {
+      white-space: normal !important;
+      max-width: 420px;
+      min-width: 0;
+      padding: 4px 10px 4px 8px;  /* padding más pequeño, opcional */
+      font-size: 0.8em;
+      line-height: 1.3;
+      box-sizing: border-box;
+      word-break: break-word;
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
+    }
+    .leyenda-condiciones .badge svg {
+      width: 1.25em;
+      height: 1.25em;
+      min-width: 1.25em;
+      min-height: 1.25em;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .export-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #5600EF 0%, #FF007A 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: 600;
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(86,0,239,0.3);
+    }
+    .export-toast.show {
+      transform: translateX(0);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>MCC Finder</h1>
-
-    <div class="search-lang-row">
-      <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
+  <div class="logo-top-right">
+    <img src="PayM2.png" alt="Logo" />
+    <div class="update-info" id="updateInfo"></div>
+  </div>
+  <h2 id="mainTitle">Catálogo de MCC PayU</h2>
+  <div class="search-lang-row">
+    <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
+    <div class="search-controls">
       <select id="langSelect" onchange="cambiarIdioma()">
         <option value="es">ES</option>
         <option value="en">EN</option>
       </select>
-      <button id="exportBtn" onclick="exportarMCCs()">Exportar</button>
+      <button id="exportBtn" class="export-btn" onclick="exportarDatos()" disabled>
+        <svg viewBox="0 0 24 24">
+          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+        </svg>
+        <span id="exportText">Exportar</span>
+      </button>
     </div>
-
-    <table id="mccTable">
-      <thead>
-        <tr>
-          <th>MCC</th>
-          <th id="actividadHeader">Actividad</th>
-          <th id="descripcionHeader">Descripción</th>
-        </tr>
-      </thead>
-      <tbody id="mccTableBody"></tbody>
-    </table>
   </div>
+  <div id="resultados" class="loading">Cargando datos...</div>
 
   <script>
-    let idiomaActual = "es";
-    let datos = [];
-    let datosCargados = false;
-
-    const textosExportar = {
-      es: "Exportar",
-      en: "Export"
+    const traducciones = {
+      es: {
+        titulo: "Catálogo de MCC PayU",
+        placeholder: "Busca por MCC, actividad, descripción...",
+        cargando: "Cargando datos...",
+        escribe: "Escribe para buscar un MCC...",
+        error: "Error cargando los datos: ",
+        noresult: "No hay coincidencias",
+        actividad: "Actividad",
+        riesgo: "Riesgo AML",
+        nivel: "Nivel de aprobación",
+        add: "ADD",
+        tpv: "Riesgo de crédito",
+        restric: "Restricciones por país:",
+        medios: "Medios de pago por país:",
+        condiciones: "Condiciones para vinculación:",
+        permitido: "Permitido",
+        restringido: "Restringido",
+        prohibido: "Prohibido",
+        exportar: "Exportar",
+        exportando: "Exportando...",
+        exportExito: "¡Datos exportados correctamente!",
+        exportError: "Error al exportar los datos"
+      },
+      en: {
+        titulo: "PayU MCC Catalog",
+        placeholder: "Search by MCC, activity, description...",
+        cargando: "Loading data...",
+        escribe: "Type to search for an MCC...",
+        error: "Error loading data: ",
+        noresult: "No matches found",
+        actividad: "Activity",
+        riesgo: "AML Risk",
+        nivel: "Approval level",
+        add: "ADD",
+        tpv: "Credit risk",
+        restric: "Country restrictions:",
+        medios: "Payment methods by country:",
+        condiciones: "Onboarding conditions:",
+        permitido: "Allowed",
+        restringido: "Restricted",
+        prohibido: "Prohibited",
+        exportar: "Export",
+        exportando: "Exporting...",
+        exportExito: "Data exported successfully!",
+        exportError: "Error exporting data"
+      }
     };
 
-    function getCol(row, col) {
-      return row[col] || "";
+    const updateTexts = {
+      es: "Actualizado: 29-Jul-2025 · Merchant Risk",
+      en: "Updated: 29-Jul-2025 by Merchant Risk"
+    };
+
+    function setUpdateInfo() {
+      document.getElementById('updateInfo').textContent = updateTexts[idioma] || updateTexts['es'];
     }
 
-    function cargarDatos() {
-      fetch(`mcc-${idiomaActual}.json`)
-        .then(res => res.json())
-        .then(json => {
-          datos = json;
-          datosCargados = true;
-          document.getElementById("mccInput").disabled = false;
-          filtrarMCC();
-        });
-    }
+    // LEYENDAS RESUMIDAS
+    const leyendasCondiciones = {
+      es: [
+        { tipo: "permitido", texto: "Permitido: Actividad autorizada con requisitos generales de KYC." },
+        { tipo: "restric", texto: "Restringido: Requiere condiciones adicionales (licencias, aprobaciones, KYC reforzado)." },
+        { tipo: "prohib", texto: "Prohibido: Actividad no elegible para vinculación." }
+      ],
+      en: [
+        { tipo: "permitido", texto: "Allowed: Authorized activity with general KYC requirements." },
+        { tipo: "restric", texto: "Restricted: Requires extra conditions (licenses, approvals, enhanced KYC)." },
+        { tipo: "prohib", texto: "Prohibited: Not eligible for onboarding." }
+      ]
+    };
 
-    function filtrarMCC() {
-      const input = document.getElementById("mccInput").value.toLowerCase();
-      const tbody = document.getElementById("mccTableBody");
-      tbody.innerHTML = "";
-
-      datos
-        .filter(row => 
-          getCol(row, "MCC").toLowerCase().includes(input) ||
-          getCol(row, "Actividad").toLowerCase().includes(input) ||
-          getCol(row, "Descripción").toLowerCase().includes(input)
-        )
-        .forEach(row => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${getCol(row, "MCC")}</td>
-            <td>${getCol(row, "Actividad")}</td>
-            <td>${getCol(row, "Descripción")}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-    }
-
-    let timeoutId;
-    function debouncedFiltrarMCC() {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(filtrarMCC, 300);
-    }
-
-    function exportarMCCs() {
-      if (!datosCargados || datos.length === 0) {
-        alert(idiomaActual === "es" ? "No hay datos cargados para exportar." : "No data loaded to export.");
-        return;
+    function renderLeyendaBadge(tipo, texto) {
+      if (tipo === "permitido") {
+        return `<span class="badge badge-permitido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+            <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+          ${texto}
+        </span>`;
       }
-
-      const mccs = datos.map(row => getCol(row, "MCC")).filter(v => v);
-      const contenido = mccs.join("\n");
-      const blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "MCCs.txt";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      if (tipo === "restric") {
+        // Rectángulo más alto para mejor presencia visual
+        return `<span class="badge badge-restringido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+            <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+          </svg>
+          ${texto}
+        </span>`;
+      }
+      if (tipo === "prohib") {
+        return `<span class="badge badge-prohibido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#d6003a"/>
+            <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          ${texto}
+        </span>`;
+      }
+      return "";
     }
 
-    function cambiarIdioma() {
-      const langSelect = document.getElementById("langSelect");
-      idiomaActual = langSelect.value;
-
-      document.getElementById("mccInput").placeholder =
-        idiomaActual === "es"
-          ? "Busca por MCC, actividad, descripción..."
-          : "Search by MCC, activity, description...";
-
-      document.getElementById("actividadHeader").textContent =
-        idiomaActual === "es" ? "Actividad" : "Activity";
-
-      document.getElementById("descripcionHeader").textContent =
-        idiomaActual === "es" ? "Descripción" : "Description";
-
-      document.getElementById("exportBtn").textContent =
-        textosExportar[idiomaActual];
-
-      cargarDatos();
+    function getCol(row, ...names) {
+      for (let n of names) {
+        if (row[n] !== undefined && row[n] !== null) return row[n];
+      }
+      return "";
     }
 
-    // Inicializar
-    cargarDatos();
-  </script>
-</body>
-</html>
+    const paises = ["CO","BR","AR","PE","CL","MX","PA"];
+    const mediosPorPais = {
+      "CO": [  
+        { "label": "PSE", "columna": "PSE" },  
+        { "label": "PSE Ding", "columna": "PSE Ding" },  
+        { "label": "Bre-B Ding", "columna": "Bre-B Ding" },  
+        { "label": "Efecty", "columna": "Efecty" },  
+        { "label": "OXXO", "columna": "OXXO" },  
+        { "label": "Codensa", "columna": "Codensa" },  
+        { "label": "IGT", "columna": "IGT" },  
+        { "label": "Davivienda", "columna": "Davivienda" },  
+        { "label": "Ding", "columna": "Ding" },  
+        { "label": "Bancolombia", "columna": "Bancolombia" },  
+        { "label": "Nequi", "columna": "Nequi" },  
+        { "label": "Botón", "columna": "Botón" },  
+        { "label": "Movii", "columna": "Movii" },  
+        { "label": "Banco de Bogotá", "columna": "Banco de Bogotá" },  
+        { "label": "Scotiabank", "columna": "Scotiabank" },  
+        { "label": "Scotiabank Colpatria", "columna": "Scotiabank Colpatria" },  
+        { "label": "ACH", "columna": "ACH" },  
+        { "label": "Matrix", "columna": "Matrix" },  
+        { "label": "TC", "columna": "TC" },  
+        { "label": "Banco Occidente", "columna": "Banco Occidente" },  
+        { "label": "BBVA", "columna": "BBVA" }  
+      ],
+      "CL": [
+        { "label": "IGT", "columna": "IGT__1" },
+        { "label": "Multicaja", "columna": "Multicaja" },
+        { "label": "Transbank", "columna": "Transbank" },
+        { "label": "KLAP", "columna": "KLAP" },
+        { "label": "KHIPU", "columna": "KHIPU" },
+        { "label": "Santander", "columna": "Santander__1" }
+      ],
+      "MX": [
+        { "label": "Banorte", "columna": "Banorte" },
+        { "label": "Amex", "columna": "Amex" },
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "OXXO", "columna": "OXXO" },
+        { "label": "Seven Eleven", "columna": "Seven Eleven" },
+        { "label": "Santander", "columna": "Santander" },
+        { "label": "Bancomer", "columna": "Bancomer" },
+        { "label": "Diestel", "columna": "Diestel" },
+        { "label": "SPEI", "columna": "SPEI" }
+      ],
+      "PE": [
+        {label: "Pago efectivo", columna: "Pago efectivo"},  
+        {label: "Amex PR", columna: "Amex PR"},  
+        {label: "Procesos MC", columna: "Procesos MC"},  
+        {label: "Visanet", columna: "Visanet"},  
+        {label: "Niubiz", columna: "Niubiz"},  
+        {label: "Izipay", columna: "Izipay"},
+        {label: "YAPE", columna: "YAPE"}
+      ],
+      "AR": [
+        {label: "Amex", columna: "Amex__1"},  
+        {label: "Cobro Express", columna: "Cobro Express"},  
+        {label: "Pagofacil", columna: "Pagofacil"},  
+        {label: "Prisma", columna: "Prisma"},  
+        {label: "Fiserv", columna: "Fiserv"},  
+        {label: "Rapipago", columna: "Rapipago"},
+        {label: "Payway", columna: "Payway"}
+      ],
+      "PA": [
+        {label: "Metrobank", columna: "Metrobank"},
+        {label: "FISERV", columna: "FISERV"}
+      ],
+      "BR": [
+        { "label": "FISERV", "columna": "FISERV" },
+        { "label": "REDE", "columna": "REDE" },
+        { "label": "CIELO", "columna": "CIELO" },
+        { "label": "SIGMA", "columna": "SIGMA" },
+        { "label": "PIX - REDE", "columna": "PIX - REDE" },
+        { "label": "PIX - QI TECH", "columna": "PIX - QI TECH" },
+        { "label": "BOLETO", "columna": "BOLETO" }
+      ]
+    };
+
+    let idioma = localStorage.getItem('idiomaMCC') || "es";
+    let datos = [];
+    let datosCargados = false;
+    let datosActuales = []; // Para almacenar los datos filtrados actualmente
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('langSelect').value = idioma;
+      cambiarIdioma(false);
+      setUpdateInfo();
+    });
+
+    let debounceTimer;
+    function debouncedFiltrarMCC() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(filtrarMCC, 250);
+    }
+
+    function t(clave) {
+      return traducciones[idioma][clave] || clave;
+    }
+
+    function getBadge(val, label) {
+      if (!val) return '';
+      const v = val.toString().toLowerCase();
+      if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) return `<span class="badge badge-permitido">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#1a7f37"/>
+          <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2
