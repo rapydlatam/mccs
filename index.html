@@ -2,169 +2,176 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>MCCs PayU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCC PayU</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', Arial, sans-serif;
+      background: #f9f9fb;
       margin: 0;
       padding: 0;
     }
-    header {
-      background: #5600EF;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      font-size: 1.4em;
-      font-weight: bold;
-    }
     .container {
       max-width: 900px;
-      margin: 20px auto;
-      background: white;
+      margin: 0 auto;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
     }
     .search-lang-row {
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
+      gap: 10px;
     }
-    #mccInput, #langSelect, #exportBtn {
+    .search-lang-row input,
+    .search-lang-row select {
+      font-family: 'Inter', Arial, sans-serif;
       font-size: 1em;
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1.5px solid #ccc;
+      flex: 1;
     }
-    #mccInput:focus {
-      border: 2px solid #5600EF;
-      outline: none;
-    }
-    #langSelect {
-      cursor: pointer;
-      border: 1px solid #5600EF;
-      font-weight: bold;
-    }
-    #exportBtn {
+    .search-lang-row button {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1em;
+      padding: 8px 16px;
+      border-radius: 6px;
       border: 1.5px solid #5600EF;
       background: #fff;
       color: #5600EF;
-      font-weight: bold;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(255,0,122,0.07);
       cursor: pointer;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
     }
-    #exportBtn:hover {
-      background: #f7f7fa;
+    .search-lang-row button:hover {
       border: 2px solid #FF007A;
       box-shadow: 0 2px 8px rgba(255,0,122,0.13);
+      background: #fff0fa;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
+    .results {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    th, td {
-      padding: 10px;
+    .mcc-item {
       border-bottom: 1px solid #eee;
-      text-align: left;
+      padding: 10px 0;
     }
-    th {
-      background: #f0f0f5;
+    .mcc-item:last-child {
+      border-bottom: none;
+    }
+    .mcc-code {
       font-weight: bold;
+      color: #5600EF;
     }
-    tr:hover {
-      background: #faf6ff;
+    .mcc-desc {
+      margin: 5px 0;
+      color: #333;
+    }
+    .mcc-activity {
+      font-size: 0.9em;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <header>MCCs PayU</header>
   <div class="container">
+    <h1>MCC PayU</h1>
     <div class="search-lang-row">
       <input type="text" id="mccInput" placeholder="Busca por MCC, actividad, descripción..." oninput="debouncedFiltrarMCC()" disabled>
       <select id="langSelect" onchange="cambiarIdioma()">
         <option value="es">ES</option>
         <option value="en">EN</option>
       </select>
-      <button id="exportBtn" onclick="exportarMCC()">⬇ Exportar</button>
+      <button id="exportBtn" onclick="exportarMCC()">📥 Exportar</button>
     </div>
-    <table id="tablaMCC">
-      <thead>
-        <tr id="encabezados"></tr>
-      </thead>
-      <tbody id="cuerpoTabla"></tbody>
-    </table>
+    <div class="results" id="results"></div>
   </div>
 
   <script>
     let datos = [];
     let datosCargados = false;
     let idioma = "es";
-    let debounceTimeout;
+    let debounceTimer;
 
     async function cargarDatos() {
-      const archivo = idioma === "es" ? "mcc_es.json" : "mcc_en.json";
       try {
-        const resp = await fetch(archivo);
-        datos = await resp.json();
+        const response = await fetch("mcc.json"); // tu archivo MCC
+        datos = await response.json();
         datosCargados = true;
         document.getElementById("mccInput").disabled = false;
-        mostrarDatos(datos);
-      } catch (e) {
-        console.error("Error cargando JSON:", e);
+        filtrarMCC();
+      } catch (error) {
+        console.error("Error cargando datos:", error);
       }
-    }
-
-    function mostrarDatos(lista) {
-      if (!lista || lista.length === 0) return;
-      const encabezados = Object.keys(lista[0]);
-      const thead = document.getElementById("encabezados");
-      thead.innerHTML = encabezados.map(h => `<th>${h}</th>`).join("");
-      const tbody = document.getElementById("cuerpoTabla");
-      tbody.innerHTML = lista.map(row =>
-        `<tr>${encabezados.map(h => `<td>${row[h]}</td>`).join("")}</tr>`
-      ).join("");
-    }
-
-    function filtrarMCC() {
-      const valor = document.getElementById("mccInput").value.toLowerCase();
-      const filtrados = datos.filter(row =>
-        Object.values(row).some(v => v.toString().toLowerCase().includes(valor))
-      );
-      mostrarDatos(filtrados);
-    }
-
-    function debouncedFiltrarMCC() {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(filtrarMCC, 300);
     }
 
     function cambiarIdioma() {
       idioma = document.getElementById("langSelect").value;
-      cargarDatos();
+      filtrarMCC();
+    }
+
+    function filtrarMCC() {
+      const input = document.getElementById("mccInput").value.toLowerCase();
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      const filtrados = datos.filter(item =>
+        item.mcc.toString().includes(input) ||
+        (item[`actividad_${idioma}`] || "").toLowerCase().includes(input) ||
+        (item[`descripcion_${idioma}`] || "").toLowerCase().includes(input)
+      );
+
+      if (filtrados.length === 0) {
+        results.innerHTML = "<p>No se encontraron resultados.</p>";
+        return;
+      }
+
+      filtrados.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "mcc-item";
+        div.innerHTML = `
+          <div class="mcc-code">MCC ${item.mcc}</div>
+          <div class="mcc-desc">${item[`descripcion_${idioma}`]}</div>
+          <div class="mcc-activity">${item[`actividad_${idioma}`]}</div>
+        `;
+        results.appendChild(div);
+      });
+    }
+
+    function debouncedFiltrarMCC() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(filtrarMCC, 300);
     }
 
     function exportarMCC() {
-      if (!datosCargados || !Array.isArray(datos) || datos.length === 0) {
-        alert("No hay datos para exportar.");
+      if (!datosCargados || !datos.length) {
+        alert("Primero espera a que los datos se carguen.");
         return;
       }
-      const encabezados = Object.keys(datos[0]);
-      const filas = datos.map(row =>
-        encabezados.map(h => `"${(row[h] || "").toString().replace(/"/g, '""')}"`).join(",")
+
+      const header = Object.keys(datos[0]);
+      const rows = datos.map(row =>
+        header.map(h => `"${(row[h] || "").toString().replace(/"/g, '""')}"`).join(",")
       );
-      const csvContent = [encabezados.join(","), ...filas].join("\n");
+      const csvContent = [header.join(","), ...rows].join("\n");
 
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", idioma === "es" ? "MCC_PayU_ES.csv" : "MCC_PayU_EN.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `MCC_PayU_${idioma}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
-    // Inicial
     cargarDatos();
   </script>
 </body>
