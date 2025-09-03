@@ -498,13 +498,13 @@
     const leyendasCondiciones = {
       es: [
         { tipo: "permitido", texto: "Permitido: Actividad autorizada con requisitos generales de KYC." },
-        { tipo: "restric", texto: "Restringido: Requiere condiciones adicionales (licencias, aprobaciones, KYC reforzado)." },
-        { tipo: "prohib", texto: "Prohibido: Actividad no elegible para vinculación." }
+        { tipo: "restringido", texto: "Restringido: Requiere condiciones adicionales (licencias, aprobaciones, KYC reforzado)." },
+        { tipo: "prohibido", texto: "Prohibido: Actividad no elegible para vinculación." }
       ],
       en: [
         { tipo: "permitido", texto: "Allowed: Authorized activity with general KYC requirements." },
-        { tipo: "restric", texto: "Restricted: Requires extra conditions (licenses, approvals, enhanced KYC)." },
-        { tipo: "prohib", texto: "Prohibited: Not eligible for onboarding." }
+        { tipo: "restringido", texto: "Restricted: Requires extra conditions (licenses, approvals, enhanced KYC)." },
+        { tipo: "prohibido", texto: "Prohibited: Not eligible for onboarding." }
       ]
     };
 
@@ -518,7 +518,7 @@
           ${texto}
         </span>`;
       }
-      if (tipo === "restric") {
+      if (tipo === "restringido") {
         return `<span class="badge badge-restringido">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#b59a00"/>
@@ -527,7 +527,7 @@
           ${texto}
         </span>`;
       }
-      if (tipo === "prohib") {
+      if (tipo === "prohibido") {
         return `<span class="badge badge-prohibido">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#d6003a"/>
@@ -820,42 +820,78 @@
         resultados.innerHTML += html;
       });
     }
-
-    // NUEVA FUNCIÓN PARA EXPORTAR A EXCEL (corregida)
+    
+    // FUNCIÓN DE EXPORTACIÓN A EXCEL CORREGIDA
     function exportarExcel() {
-      // Definir los encabezados dinámicamente según el idioma actual
+      // 1. Definir los encabezados basados en el idioma actual
       const es_encabezados = [
-        "MCC", "MCC CODE DESCRIPTION ES", "Categroria / Subcategoria", "Actividad", "ADD",
-        "Riesgo LAyFT", "Nivel de Aprobación", "Condiciones para vinculación"
+        "MCC",
+        "MCC CODE DESCRIPTION ES",
+        "Actividad",
+        "Categroria / Subcategoria",
+        "ADD",
+        "Riesgo LAyFT",
+        "Fuente de restricción",
+        "Nivel de Aprobación",
+        "Condiciones para vinculación"
       ];
       const en_encabezados = [
-        "MCC", "MCC CODE DESCRIPTION EN", "Category / Subcategory", "Activity", "ADD",
-        "AML Risk", "Approval Level", "Onboarding conditions"
+        "MCC",
+        "MCC CODE DESCRIPTION EN",
+        "Actividad",
+        "Categroria / Subcategoria",
+        "ADD",
+        "Riesgo LAyFT",
+        "Fuente de restricción",
+        "Approval Level",
+        "Onboarding conditions"
       ];
-      let encabezados = idioma === 'es' ? es_encabezados : en_encabezados;
-      
-      // Agregar encabezados de países y medios de pago
-      encabezados = encabezados.concat(paises);
-      paises.forEach(pais => {
-        (mediosPorPais[pais] || []).forEach(medio => {
-          encabezados.push(medio.columna);
-        });
-      });
 
-      // Construir la tabla HTML para la exportación
+      const encabezados = idioma === 'es' ? es_encabezados : en_encabezados;
+
+      // 2. Agregar los países y sus medios de pago dinámicamente
+      paises.forEach(pais => {
+        encabezados.push(pais);
+        if (mediosPorPais[pais]) {
+          mediosPorPais[pais].forEach(medio => {
+            encabezados.push(medio.columna);
+          });
+        }
+      });
+    
+      // 3. Construir la tabla HTML para la exportación
       let tablaHtml = '<table><thead><tr>';
       encabezados.forEach(h => {
         tablaHtml += `<th style="background-color:#5600EF; color:#FFFFFF; font-weight:bold; border: 1px solid #FF007A;">${h}</th>`;
       });
       tablaHtml += '</tr></thead><tbody>';
-
-      // Llenar la tabla con los datos del idioma actual
+    
       datos.forEach(row => {
         tablaHtml += '<tr>';
         encabezados.forEach(h => {
-          const valor = row[h] || "";
-          let estilo = '';
+          // Usar la misma lógica del buscador para encontrar el valor correcto
+          let valor = getCol(row, h, ...Object.keys(row)); // Intenta con el nombre directo, si no busca en todas las claves
           
+          // Mapeo específico para las columnas con nombres diferentes
+          if (h === "Nivel de Aprobación" && idioma === 'en') {
+            valor = row["Approval Level"] || "";
+          } else if (h === "Approval Level" && idioma === 'es') {
+            valor = row["Nivel de Aprobación"] || "";
+          } else if (h === "Condiciones para vinculación" && idioma === 'en') {
+            valor = row["Onboarding conditions"] || "";
+          } else if (h === "Onboarding conditions" && idioma === 'es') {
+            valor = row["Condiciones para vinculación"] || "";
+          } else if (h === "Botón Bancolombia" && idioma === 'es') {
+            valor = row["Botón"] || "";
+          } else if (h === "Scotiabank Colpatria" && idioma === 'es') {
+            valor = row["Colpatria"] || "";
+          } else if (h === "Amex PR" && idioma === 'es') {
+            valor = row["Amex"] || "";
+          } else if (h === "Amex" && idioma === 'en') {
+            valor = row["Amex__1"] || "";
+          }
+    
+          let estilo = '';
           const v = String(valor).toLowerCase();
           if (v.includes('permitido') || v.includes('allowed') || v.includes('permitted')) {
             estilo = 'background-color:#e6fbe9;';
@@ -870,9 +906,9 @@
         tablaHtml += '</tr>';
       });
       tablaHtml += '</tbody></table>';
-
-      // Codificar y descargar el archivo
-      const nombreArchivo = 'Catalogo_MCC_PayU.xls';
+    
+      // 4. Codificar y descargar el archivo
+      const nombreArchivo = `Catalogo_MCC_${idioma}.xls`;
       const uri = 'data:application/vnd.ms-excel;base64,' + btoa(unescape(encodeURIComponent(tablaHtml)));
       const link = document.createElement('a');
       link.href = uri;
