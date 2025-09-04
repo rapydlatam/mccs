@@ -295,6 +295,11 @@
       color: #d6003a;
       border-color: #d6003a;
     }
+    .badge-exclusive {
+      background: #f0f0f0; /* Un gris claro para el fondo */
+      color: #555555;     /* Un gris oscuro para el texto */
+      border-color: #555555; /* Un gris oscuro para el borde */
+    }
     .badge svg {
       width: 1.25em;
       height: 1.25em;
@@ -499,12 +504,14 @@
       es: [
         { tipo: "permitido", texto: "Permitido: Actividad autorizada con requisitos generales de KYC." },
         { tipo: "restringido", texto: "Restringido: Requiere condiciones adicionales (licencias, aprobaciones, KYC reforzado)." },
-        { tipo: "prohibido", texto: "Prohibido: Actividad no elegible para vinculación." }
+        { tipo: "prohibido", texto: "Prohibido: Actividad no elegible para vinculación." },
+        { tipo: "exclusivo", texto: "Exclusivo: Exclusiva para medio de pago no debe activarse." }
       ],
       en: [
         { tipo: "permitido", texto: "Allowed: Authorized activity with general KYC requirements." },
         { tipo: "restringido", texto: "Restricted: Requires extra conditions (licenses, approvals, enhanced KYC)." },
-        { tipo: "prohibido", texto: "Prohibited: Not eligible for onboarding." }
+        { tipo: "prohibido", texto: "Prohibited: Not eligible for onboarding." },
+        { tipo: "exclusive", texto: "Exclusive: Exclusive for payment method should not be activated." }
       ]
     };
 
@@ -520,6 +527,15 @@
       }
       if (tipo === "restringido") {
         return `<span class="badge badge-restringido">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+            <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+          </svg>
+          ${texto}
+        </span>`;
+      }
+      if (tipo === "exclusivo") {
+        return `<span class="badge badge-exclusivo">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="10" cy="10" r="10" fill="#b59a00"/>
             <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
@@ -645,6 +661,13 @@
         </svg>
         ${label}
       </span>`;
+      if (v.includes('exclusivo') || v.includes('exclusive')) return `<span class="badge badge-exclusivo">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#d6003a"/>
+          <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        ${label}
+      </span>`;
       if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#d6003a"/>
@@ -671,6 +694,13 @@
           <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
         </svg>
         ${t('restringido')}
+      </span>`;
+      if (v.includes('exclusivo') || v.includes('exclusive')) return `<span class="badge badge-exclusivo">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <circle cx="10" cy="10" r="10" fill="#b59a00"/>
+          <rect x="5" y="7" width="10" height="6" rx="2" fill="#fff"/>
+        </svg>
+        ${t('exclusivo')}
       </span>`;
       if (v.includes('prohibido') || v.includes('prohibited')) return `<span class="badge badge-prohibido">
         <svg viewBox="0 0 20 20" fill="currentColor">
