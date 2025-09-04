@@ -537,6 +537,7 @@
       if (tipo === "exclusivo") {
         return `<span class="badge badge-exclusivo">
           <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="10" cy="10" r="10" fill="#555555"/>
             <polygon points="10,0 20,20 0,20" />
           </svg>
           ${texto}
@@ -663,7 +664,7 @@
       if (v.includes('exclusivo') || v.includes('exclusive')) return `<span class="badge badge-exclusivo">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <circle cx="10" cy="10" r="10" fill="#555555"/>
-          <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <polygon points="10,5 15,15 5,15" fill="#fff" />
         </svg>
         ${label}
       </span>`;
