@@ -697,7 +697,8 @@
       </span>`;
       if (v.includes('exclusivo') || v.includes('exclusive')) return `<span class="badge badge-exclusivo">
         <svg viewBox="0 0 20 20" fill="currentColor">
-          <polygon points="10,0 20,20 0,20" />
+          <circle cx="10" cy="10" r="10" fill="#555555"/>
+          <polygon points="10,0 20,20 0,20" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round/>
         </svg>
         ${t('exclusivo')}
       </span>`;
